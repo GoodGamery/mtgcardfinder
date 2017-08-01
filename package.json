@@ -1,0 +1,51 @@
+{
+  "name": "mtgcardfinder",
+  "version": "1.0.1",
+  "description": "MTG Card Finder Robot",
+  "author": "Justin Woolley <justinwoolley@gmail.com> (https://www.pseudochaos.org)",
+  "main": "src/cardfinder.js",
+  "scripts": {
+    "lint": "gulp lint",  	
+    "start": "node src/cardfinder.js",
+    "watch": "gulp"
+  },
+  "license": "MIT",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "eslint": "^4.2.0",
+    "gulp": "^3.9.1",
+    "gulp-debug": "^3.1.0",
+    "gulp-eslint": "^4.0.0",
+    "gulp-jsonlint": "^1.2.0",
+    "gulp-util": "3.0.8",
+    "run-sequence": "^2.0.0"
+  },
+  "eslintConfig": {
+    "extends": "eslint:recommended",
+    "parserOptions": {
+      "ecmaVersion": 6
+    },
+    "env": {
+      "node": true,
+      "es6": true
+    },
+    "rules": {
+      "no-console": 0,
+      "no-mixed-spaces-and-tabs": 1,
+      "no-unused-expressions": 1,
+      "no-unused-vars": [
+        1,
+        {
+          "vars": "all",
+          "args": "after-used"
+        }
+      ],
+      "strict": 2,
+      "semi": [
+        2,
+        "always"
+      ]
+    }
+  }
+}
