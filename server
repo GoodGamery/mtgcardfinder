@@ -1,0 +1,49 @@
+#!/usr/bin/env node
+'use strict';
+
+const express = require('express');
+const _ = require('lodash');
+const request = require('request');
+
+const allSets = require('./data/AllSets.json');
+
+const ungluedCardsFull = allSets.UGL.cards;
+const ungluedCards = _.map(ungluedCardsFull, (card) => ({
+    name: card.name,
+    multiverseid: card.multiverseid,
+    imageUrl: `http://gatherer.wizards.com/Handlers/Image.ashx?type=card&multiverseid=${card.multiverseid}`,
+}));
+const ungluedCardsMap = {};
+ungluedCards.forEach(card => {
+    ungluedCardsMap[card.name] = card;
+});
+
+console.log(`Cards loaded: ${ungluedCards.length}`);
+
+const app = express();
+
+app.get('/cards', function (req, res) {
+  res.send(ungluedCards);
+});
+
+app.get('/cardmap', function (req, res) {
+  res.send(ungluedCardsMap);
+});
+
+app.get('/card/:name', function (req, res) {
+    console.log(req.params.name);
+    console.log(ungluedCardsMap[req.params.name]);
+  res.send(ungluedCardsMap[req.params.name]);
+});
+
+app.get('/card/:name/image', function (req, res) {
+    const url = ungluedCardsMap[req.params.name].imageUrl;
+    console.log(`${req.params.name}/image: ${url}`);
+    res.contentType('jpeg');
+    request.get(url).pipe(res);
+});
+
+
+app.listen(3000, () => {
+  console.log('Example app listening on port 3000!');
+});
