@@ -7,43 +7,55 @@ const request = require('request');
 
 const allSets = require('./data/AllSets.json');
 
-const ungluedCardsFull = allSets.UGL.cards;
-const ungluedCards = _.map(ungluedCardsFull, (card) => ({
+const cardListFull = _.flatMap(allSets, (set) => set.cards);
+const cardList = _.map(cardListFull, (card) => ({
     name: card.name,
     multiverseid: card.multiverseid,
     imageUrl: `http://gatherer.wizards.com/Handlers/Image.ashx?type=card&multiverseid=${card.multiverseid}`,
 }));
-const ungluedCardsMap = {};
-ungluedCards.forEach(card => {
-    ungluedCardsMap[card.name] = card;
+
+let normalizeName = (name) => {
+    return name.split(`//`)[0].toLowerCase().trim();
+};
+
+let cardMap = {};
+cardList.forEach(card => {
+    cardMap[normalizeName(card.name)] = card;
 });
 
-console.log(`Cards loaded: ${ungluedCards.length}`);
+console.log(`Cards loaded: ${cardList.length}`);
 
 const app = express();
 
 app.get('/cards', function (req, res) {
-  res.send(ungluedCards);
+  res.send(cardList);
 });
 
 app.get('/cardmap', function (req, res) {
-  res.send(ungluedCardsMap);
+  res.send(cardMap);
 });
 
-app.get('/card/:name', function (req, res) {
-    console.log(req.params.name);
-    console.log(ungluedCardsMap[req.params.name]);
-  res.send(ungluedCardsMap[req.params.name]);
+app.get('/card', function (req, res) {
+    const name = normalizeName(req.query.card);
+    const card = cardMap[name];
+    if (!card)
+        return res.status(500).send(`No card found for name ${name}`);
+    console.log(`Card "${req.query.card}" -> "${name}": ${card}`);
+    res.send(card);
 });
 
-app.get('/card/:name/image', function (req, res) {
-    const url = ungluedCardsMap[req.params.name].imageUrl;
-    console.log(`${req.params.name}/image: ${url}`);
+app.get('/image', function (req, res) {
+    const name = normalizeName(req.query.card);
+    const card = cardMap[name];
+    if (!card)
+        return res.status(500).send(`No card found for name "${name}"`);
+    const url = card.imageUrl;
+    console.log(`Image "${req.query.card}" -> "${name}": ${url}`);
     res.contentType('jpeg');
     request.get(url).pipe(res);
 });
 
 
 app.listen(3000, () => {
-  console.log('Example app listening on port 3000!');
+    console.log('Example app listening on port 3000!');
 });
