@@ -1,0 +1,14 @@
+[Unit]
+Description=MTG Cardfinder
+
+[Service]
+ExecStart=/var/node/mtgcardfinder/server
+Restart=always
+User=www-data
+Group=www-data
+Environment=PATH=/usr/bin:/usr/local/bin
+Environment=NODE_ENV=production
+WorkingDirectory=/var/node/mtgcardfinder
+
+[Install]
+WantedBy=multi-user.target

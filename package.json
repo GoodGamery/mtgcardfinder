@@ -5,12 +5,15 @@
   "author": "Justin Woolley <justinwoolley@gmail.com> (https://www.pseudochaos.org)",
   "main": "src/cardfinder.js",
   "scripts": {
-    "lint": "gulp lint",  	
+    "lint": "gulp lint",
     "start": "node src/cardfinder.js",
     "watch": "gulp"
   },
   "license": "MIT",
   "dependencies": {
+    "express": "4.15.3",
+    "lodash": "4.17.4",
+    "request": "2.81.0"
   },
   "devDependencies": {
     "eslint": "^4.2.0",

@@ -1,0 +1,35 @@
+#!/usr/bin/env node
+'use strict';
+
+const port = 3030;
+const express = require('express');
+const request = require('request');
+const MtgData = require('./src/mtg-data');
+
+const app = express();
+
+app.get('/card', function (req, res) {
+    const name = req.query.card;
+    const card = MtgData.getCard(name);
+    if (!card)
+        return res.status(500).send(`No card found for card ${name}`);
+    console.log(`Card "${req.query.card}" -> "${name}": ${card}`);
+    res.send(card);
+});
+
+app.get('/image', function (req, res) {
+    const name = req.query.card;
+    const card = MtgData.getCard(name);
+    if (!card)
+        return res.status(500).send(`No card found for card "${name}"`);
+    if (!card.multiverseid)
+        return res.status(500).send(`No multiverseid found for card "${name}"`);
+    const url = card.imageUrl;
+    console.log(`Image "${req.query.card}" -> "${name}": ${url}`);
+    res.contentType('jpeg');
+    request.get(url).pipe(res);
+});
+
+app.listen(port, () => {
+    console.log(`MTG Card Finder listening on port ${port}`);
+});
