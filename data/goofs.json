@@ -1,0 +1,14 @@
+{
+  "bottomless pit": {
+    "imageUrl": "/static/goofs/bottomless-pit.png"
+  },
+  "crop rotation": {
+    "imageUrl": "/static/goofs/crop-rotation.jpg"
+  },
+  "smallpox": {
+    "imageUrl": "/static/goofs/smallpox.png"
+  },
+  "twisted Image": {
+    "imageUrl": "/static/goofs/twisted-image.png"
+  }
+}

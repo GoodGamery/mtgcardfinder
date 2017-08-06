@@ -3,10 +3,10 @@
   "version": "1.0.1",
   "description": "MTG Card Finder Robot",
   "author": "Justin Woolley <justinwoolley@gmail.com> (https://www.pseudochaos.org)",
-  "main": "src/cardfinder.js",
+  "main": "server",
   "scripts": {
+    "start": "node server",
     "lint": "gulp lint",
-    "start": "node src/cardfinder.js",
     "watch": "gulp"
   },
   "license": "MIT",

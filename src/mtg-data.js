@@ -1,33 +1,47 @@
 'use strict';
 const _ = require('lodash');
 const allSets = require('../data/AllSets.json');
+const goofs = require('../data/goofs.json');
 const multiverseUrl = 'http://gatherer.wizards.com/Handlers/Image.ashx?type=card&multiverseid=';
 
 const cardListFull = _.flatMap(allSets, (set) => set.cards);
-const cardList = _.map(cardListFull, (card) => ({
-    name: card.name,
-    multiverseid: card.multiverseid,
-    imageUrl: `${multiverseUrl}${card.multiverseid}`,
-}));
+const cardList = _.map(cardListFull, (card) =>
+  Object.assign({}, card, {
+    imageUrl: card.multiverseid ? `${multiverseUrl}${card.multiverseid}` : null
+  })
+);
 
 let normalizeName = (name) => {
-    return name.split(`//`)[0].toLowerCase().trim();
+  return name.split(`//`)[0].toLowerCase().trim();
 };
 
 let cardMap = {};
 cardList.forEach(card => {
-    const name = normalizeName(card.name);
-    if (!cardMap[name] || !cardMap[name].multiverseid)
-        cardMap[name] = card;
+  const name = normalizeName(card.name);
+  if (!cardMap[name] || card.multiverseid)
+    cardMap[name] = card;
 });
 
 console.log(`Cards loaded: ${cardList.length}`);
 
-function getCard(name) {
-    return cardMap[normalizeName(name)];
+function getCardFromQuery(query) {
+  const name = query.card;
+  const useGoof = query.goof !== undefined;
+  const normalizedName = normalizeName(name);
+  if (useGoof && goofs && goofs[normalizedName])
+    return Object.assign({}, cardMap[normalizedName], goofs[normalizedName]);
+  return cardMap[normalizedName];
+}
+
+function getCard(name, useGoof) {
+  const normalizedName = normalizeName(name);
+  if (useGoof && goofs && goofs[normalizedName])
+    return Object.assign({}, cardMap[normalizedName], goofs[normalizedName]);
+  return cardMap[normalizedName];
 }
 
 module.exports = {
-    cardMap: cardMap,
-    getCard: getCard
+  cardMap,
+  getCard,
+  getCardFromQuery
 };
