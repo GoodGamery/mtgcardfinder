@@ -40,3 +40,6 @@ app.listen(PORT, () =>
 process.on('uncaughtException', (err) => {
   console.error(err);
 });
+
+// Allows testing
+module.exports = app;
