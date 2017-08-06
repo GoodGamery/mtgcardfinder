@@ -3,10 +3,13 @@
 
 const PORT = 3030;
 const express = require('express');
+const cors = require('cors');
 const CardApi = require('./src/card-api');
 const ErrorHandlers = require('./src/error-handlers');
 
 const app = express();
+
+app.use(cors());
 
 // Expose the public directory as a static file resource
 app.use(`/static`, express.static('static'));
