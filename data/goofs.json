@@ -1,0 +1,23 @@
+{
+  "bottomless pit": {
+    "imageUrl": "/static/goofs/bottomless-pit.png"
+  },
+  "crop rotation": {
+    "imageUrl": "/static/goofs/crop-rotation.jpg"
+  },
+  "smallpox": {
+    "imageUrl": "/static/goofs/smallpox.png"
+  },
+  "twisted image": {
+    "imageUrl": "/static/goofs/twisted-image.png"
+  },
+  "blessed reversal": {
+    "imageUrl": "/static/goofs/blessed-reversal.jpg"
+  },
+  "invert the skies": {
+    "imageUrl": "/static/goofs/invert-the-skies.jpg"
+  },
+  "blurred mongoose": {
+    "imageUrl": "/static/goofs/blurred-mongoose.jpg"
+  }
+}
