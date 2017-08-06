@@ -9,7 +9,9 @@ const ErrorHandlers = require('./src/error-handlers');
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: true
+}));
 
 // Expose the public directory as a static file resource
 app.use(`/static`, express.static('static'));
