@@ -16,7 +16,9 @@ let normalizeName = (name) => {
 
 let cardMap = {};
 cardList.forEach(card => {
-    cardMap[normalizeName(card.name)] = card;
+    const name = normalizeName(card.name);
+    if (!cardMap[name] || !cardMap[name].multiverseid)
+        cardMap[name] = card;
 });
 
 console.log(`Cards loaded: ${cardList.length}`);
