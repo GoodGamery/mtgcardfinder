@@ -8,7 +8,16 @@
   "smallpox": {
     "imageUrl": "/static/goofs/smallpox.png"
   },
-  "twisted Image": {
+  "twisted image": {
     "imageUrl": "/static/goofs/twisted-image.png"
+  },
+  "blessed reversal": {
+    "imageUrl": "/static/goofs/blessed-reversal.jpg"
+  },
+  "invert the skies": {
+    "imageUrl": "/static/goofs/invert-the-skies.jpg"
+  },
+  "blurred mongoose": {
+    "imageUrl": "/static/goofs/blurred-mongoose.jpg"
   }
 }
