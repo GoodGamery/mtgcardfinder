@@ -1,0 +1,28 @@
+{
+  "extends": "eslint:recommended",
+  "parserOptions": {
+    "ecmaVersion": 6
+  },
+  "env": {
+    "node": true,
+    "es6": true,
+    "mocha": true
+  },
+  "rules": {
+    "no-console": 0,
+    "no-mixed-spaces-and-tabs": 1,
+    "no-unused-expressions": 1,
+    "no-unused-vars": [
+      1,
+      {
+        "vars": "all",
+        "args": "after-used"
+      }
+    ],
+    "strict": 2,
+    "semi": [
+      2,
+      "always"
+    ]
+  }
+}
