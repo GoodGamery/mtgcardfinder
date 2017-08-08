@@ -7,7 +7,8 @@
   "scripts": {
     "start": "node server",
     "lint": "gulp lint",
-    "watch": "gulp"
+    "watch": "gulp",
+    "test": "mocha"
   },
   "license": "MIT",
   "dependencies": {
@@ -17,12 +18,15 @@
     "request": "2.81.0"
   },
   "devDependencies": {
+    "chai": "4.1.1",
+    "chai-http": "^3.0.0",
     "eslint": "^4.2.0",
     "gulp": "^3.9.1",
     "gulp-debug": "^3.1.0",
     "gulp-eslint": "^4.0.0",
     "gulp-jsonlint": "^1.2.0",
     "gulp-util": "3.0.8",
+    "mocha": "3.5.0",
     "run-sequence": "^2.0.0"
   },
   "eslintConfig": {
