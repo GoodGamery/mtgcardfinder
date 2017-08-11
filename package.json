@@ -3,6 +3,7 @@
   "version": "1.0.1",
   "description": "MTG Card Finder Robot",
   "author": "Justin Woolley <justinwoolley@gmail.com> (https://www.pseudochaos.org)",
+  "repository": "https://github.com/GoodGamery/mtgcardfinder",
   "main": "server",
   "scripts": {
     "start": "node server",
@@ -12,22 +13,22 @@
   },
   "license": "MIT",
   "dependencies": {
-    "cors": "^2.8.4",
+    "cors": "2.8.4",
     "express": "4.15.3",
     "lodash": "4.17.4",
     "request": "2.81.0"
   },
   "devDependencies": {
     "chai": "4.1.1",
-    "chai-http": "^3.0.0",
-    "eslint": "^4.2.0",
-    "gulp": "^3.9.1",
-    "gulp-debug": "^3.1.0",
-    "gulp-eslint": "^4.0.0",
-    "gulp-jsonlint": "^1.2.0",
+    "chai-http": "3.0.0",
+    "eslint": "4.2.0",
+    "gulp": "3.9.1",
+    "gulp-debug": "3.1.0",
+    "gulp-eslint": "4.0.0",
+    "gulp-jsonlint": "1.2.0",
     "gulp-util": "3.0.8",
     "mocha": "3.5.0",
-    "run-sequence": "^2.0.0"
+    "run-sequence": "2.0.0"
   },
   "eslintConfig": {
     "extends": "eslint:recommended",
