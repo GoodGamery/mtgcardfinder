@@ -5,6 +5,9 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const server = require('../server');
 
+// Allows use of `should` in tests
+chai.should();
+
 chai.use(chaiHttp);
 
 const validateMtgJson = (res) => {
