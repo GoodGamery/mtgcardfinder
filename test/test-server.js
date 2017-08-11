@@ -4,7 +4,6 @@ process.env.NODE_ENV = 'test';
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const server = require('../server');
-const should = chai.should();
 
 chai.use(chaiHttp);
 
@@ -15,7 +14,7 @@ const validateMtgJson = (res) => {
   res.body.should.have.property('name');
   res.body.should.have.property('multiverseid');
   res.body.should.have.property('imageUrl');
-}
+};
 
 describe('cardfinder', () => {
   it('should return JSON from GET (plains) /card/json', (done) => {

@@ -2,30 +2,23 @@
 'use strict';
 
 const PORT = 3030;
-const express = require('express');
-const cors = require('cors');
-const CardApi = require('./src/card-api');
+const Express = require('express');
+const Cors = require('cors');
+
 const ErrorHandlers = require('./src/error-handlers');
+const Controllers = require('./controllers');
 
-const app = express();
+const app = Express();
 
-app.use(cors({
+app.use(Cors({
   origin: true
 }));
 
 // Expose the public directory as a static file resource
-app.use(`/static`, express.static('static'));
+app.use(`/static`, Express.static('static'));
 
-// ?card=Plains
-app.get('/card', CardApi.getCardJson);
-app.get('/card/json', CardApi.getCardJson);
-
-// ?card=Plains
-app.get('/card/html', CardApi.getCardHtml);
-
-// ?card=Plains
-app.get('/image', CardApi.getCardImage);
-app.get('/card/image', CardApi.getCardImage);
+// Routes for the server to expose
+app.use(Controllers);
 
 // Error handling
 app.use(ErrorHandlers.logErrors);
@@ -36,7 +29,7 @@ app.listen(PORT, () =>
     console.log(`MTG Card Finder listening on port ${PORT}`)
 );
 
-// Last resort
+// Last resort, log exceptions
 process.on('uncaughtException', (err) => {
   console.error(err);
 });
