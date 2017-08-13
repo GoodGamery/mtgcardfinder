@@ -5,12 +5,11 @@ const router = express.Router();
 const CardApi = require('../src/card-api');
 
 // ?card=Plains
-router.get('/json', CardApi.getCardJson);
-
-// ?card=Plains
+// ?q=t:Basic
+router.get('/', CardApi.getCardJsonList);
+router.get('/json', CardApi.getCardJsonList);
+router.get('/name', CardApi.getCardNameList);
 router.get('/html', CardApi.getCardHtml);
-
-// ?card=Plains
 router.get('/image', CardApi.getCardImage);
 
 module.exports = router;

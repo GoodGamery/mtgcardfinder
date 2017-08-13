@@ -25,22 +25,52 @@ const getCardImage = (req, res, next) => {
 };
 
 const getCardHtml = (req, res) => {
-  const card = MtgData.getCardFromQuery(req.query);
-  if (card && card.imageUrl)
-    res.send(`<img src="${card.imageUrl}" />`);
-  else
-    res.send(`<img src="/static/images/cardback.jpg" />`);
+  const limit = coerceNumber(req.query.limit, 25, 1, 50);
+  const cards = MtgData.getCardsFromQuery(req.query, limit);
+  if (cards.length > 0) {
+    const htmlResults = cards
+      .map(card => card && card.imageUrl
+      ? `<img src="${card.imageUrl}"></img>`
+      : `<img src="/static/images/cardback.jpg"></img>`
+    );
+    res.send(`<!DOCTYPE html>
+      <html>
+        <body>
+          ${htmlResults.join(``)}
+        </body>
+      </html>
+    `);
+  } else {
+    res.send(`<img src="/static/images/cardback.jpg"></img>`);
+  }
 };
 
-const getCardJson = (req, res) => {
-  const card = MtgData.getCardFromQuery(req.query);
-  if (!card)
-    return res.status(404).send(`No card found for card ${req.query.card}`);
-  res.send(card);
+const getCardJsonList = (req, res) => {
+  const limit = coerceNumber(req.query.limit, 25, 1, 50);
+  const cards = MtgData.getCardsFromQuery(req.query, limit);
+  if (!cards)
+    return res.status(404).send(`No cards found for request card=${req.query.card} q=${req.query.q}`);
+  res.send(cards);
+};
+
+const getCardNameList = (req, res) => {
+  const limit = coerceNumber(req.query.limit, 25, 1, 50);
+  const cards = MtgData.getCardsFromQuery(req.query, limit);
+  if (!cards || cards.length === 0)
+    return res.status(404).send(`No cards found for request card=${req.query.card} q=${req.query.q}`);
+  res.contentType(`text/plain`).send(cards.map(card => card.name).join(`\n`));
+};
+
+const coerceNumber = (sourceValue, defaultValue, min, max) => {
+  let num = Number(sourceValue);
+  if (isNaN(num))
+    return defaultValue;
+  return Math.min(Math.max(num, min), max);
 };
 
 module.exports = {
   getCardImage: getCardImage,
   getCardHtml: getCardHtml,
-  getCardJson: getCardJson
+  getCardJsonList: getCardJsonList,
+  getCardNameList: getCardNameList
 };
