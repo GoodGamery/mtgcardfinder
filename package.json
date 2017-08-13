@@ -50,7 +50,6 @@
           "args": "after-used"
         }
       ],
-      "strict": 2,
       "semi": [
         2,
         "always"

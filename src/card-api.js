@@ -35,7 +35,7 @@ const getCardHtml = (req, res) => {
 const getCardJson = (req, res) => {
   const card = MtgData.getCardFromQuery(req.query);
   if (!card)
-    return res.status(404).send(`No card found for card ${req.query.card}`);
+    return res.status(404).send(`No card found for request card=${req.query.card} q=${req.query.q}`);
   res.send(card);
 };
 

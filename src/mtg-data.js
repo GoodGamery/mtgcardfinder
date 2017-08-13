@@ -49,7 +49,7 @@ function getCard(name, useGoof) {
 }
 
 function getCardBySearch(q) {
-  return search(cardList, q, 1);
+  return search(cardList, q, 1)[0];
 }
 
 module.exports = {
