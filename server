@@ -2,37 +2,13 @@
 'use strict';
 
 const PORT = 3030;
-const Express = require('express');
-const Cors = require('cors');
-
-const ErrorHandlers = require('./src/error-handlers');
-const Controllers = require('./controllers');
-
-const app = Express();
-
-app.use(Cors({
-  origin: true
-}));
-
-// Expose the public directory as a static file resource
-app.use(`/static`, Express.static('static'));
-
-// Routes for the server to expose
-app.use(Controllers);
-
-// Error handling
-app.use(ErrorHandlers.logErrors);
-app.use(ErrorHandlers.clientErrorHandler);
-app.use(ErrorHandlers.errorHandler);
-
-app.listen(PORT, () =>
-    console.log(`MTG Card Finder listening on port ${PORT}`)
-);
+const app = require('./app');
 
 // Last resort, log exceptions
 process.on('uncaughtException', (err) => {
   console.error(err);
 });
 
-// Allows testing
-module.exports = app;
+app.listen(PORT, () =>
+    console.log(`MTG Card Finder listening on port ${PORT}`)
+);

@@ -6,10 +6,10 @@ const search = require('./search');
 
 const multiverseUrl = 'http://gatherer.wizards.com/Handlers/Image.ashx?type=card&multiverseid=';
 
-const cardListFull = _.flatMap(allSets, (set) => set.cards);
-const cardList = _.map(cardListFull, (card) =>
+const cardListOriginal = _.flatMap(allSets, (set) => set.cards);
+const cardListEnhanced = _.map(cardListOriginal, (card) =>
   Object.assign({}, card, {
-    imageUrl: card.multiverseid ? `${multiverseUrl}${card.multiverseid}` : null
+    imageUrl: card.multiverseid ? `${multiverseUrl}${card.multiverseid}` : undefined
   })
 );
 
@@ -20,12 +20,24 @@ let normalizeName = (name) => {
     .trim();        // No trailing spaces
 };
 
+const compareCardsForSuitability = (a, b) => {
+  if (a === undefined)    return b;
+  if (b === undefined)    return a;
+  if (a.imageUrl === undefined)    return b;
+  if (b.imageUrl === undefined)    return a;
+  if (a.rarity === `Special`) return b;
+  if (b.rarity === `Special`) return a;
+  return (a.multiverseid > b.multiverseid) ? a : b;
+};
+
 let cardMap = {};
-cardList.forEach(card => {
+cardListEnhanced.forEach(card => {
   const name = normalizeName(card.name);
-  if (!cardMap[name] || card.multiverseid)
-    cardMap[name] = card;
+  cardMap[name] = compareCardsForSuitability(cardMap[name], card);
 });
+
+// Deduped card list
+const cardList = Object.keys(cardMap).map(k => cardMap[k]);
 
 console.log(`Cards loaded: ${cardList.length}`);
 
@@ -47,11 +59,16 @@ function getCardsFromQuery(query, limit) {
   const name = query.card || ``;
   const useGoof = query.goof !== undefined;
   const normalizedName = normalizeName(name);
+  // Use search query
   if (searchQuery)
     return getCardsBySearch(searchQuery, searchLimit);
+  // Use exact card search
+  let result = cardMap[normalizedName];
   if (useGoof && goofs && goofs[normalizedName])
-    return [Object.assign({}, cardMap[normalizedName], goofs[normalizedName])];
-  return [cardMap[normalizedName]];
+    result = Object.assign({}, cardMap[normalizedName], goofs[normalizedName]);
+  if (result)
+    return [result];
+  return undefined;
 }
 
 function getCard(name, useGoof) {

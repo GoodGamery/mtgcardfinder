@@ -3,7 +3,12 @@ process.env.NODE_ENV = 'test';
 
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const server = require('../server');
+const server = require('../app');
+
+const TEST_PORT = 3031;
+server.listen(TEST_PORT, () => {
+  console.log(`Tests running on port ${TEST_PORT}`);
+});
 
 // Allows use of `should` in tests
 chai.should();
@@ -13,10 +18,15 @@ chai.use(chaiHttp);
 const validateMtgJson = (res) => {
   res.should.have.status(200);
   res.type.should.equal(`application/json`);
-  res.body.should.be.a('object');
-  res.body.should.have.property('name');
-  res.body.should.have.property('multiverseid');
-  res.body.should.have.property('imageUrl');
+  res.body.should.be.a('array');
+  res.body[0].should.have.property('name');
+  res.body[0].should.have.property('multiverseid');
+  res.body[0].should.have.property('imageUrl');
+};
+
+const validateMtgName = (res) => {
+  res.should.have.status(200);
+  res.type.should.equal(`text/html`);
 };
 
 describe('cardfinder', () => {
@@ -25,9 +35,31 @@ describe('cardfinder', () => {
       .get('/card/json?card=Plains')
       .end((err, res) => {
         validateMtgJson(res);
-        res.body.name.should.equal(`Plains`);
-        res.body.multiverseid.should.equal(129683);
-        res.body.imageUrl.should.equal('http://gatherer.wizards.com/Handlers/Image.ashx?type=card&multiverseid=129683');
+        res.body.length.should.equal(1);
+        res.body[0].name.should.equal(`Plains`);
+        res.body[0].multiverseid.should.equal(430880);
+        res.body[0].imageUrl.should.equal('http://gatherer.wizards.com/Handlers/Image.ashx?type=card&multiverseid=430880');
+        done();
+      });
+  });
+
+  it('should return card name from GET (plains) /card/name', (done) => {
+    chai.request(server)
+      .get('/card/name?card=Plains')
+      .end((err, res) => {
+        validateMtgName(res);
+        res.text.should.equal(`Plains`);
+        done();
+      });
+  });
+
+  it('should return exactly 11 cards from GET (q=t:Basic) /card/json', (done) => {
+    chai.request(server)
+      .get('/card/json?q=t:Basic')
+      .end((err, res) => {
+        validateMtgJson(res);
+        // Basics, snow-covered basics, Wastes
+        res.body.length.should.equal(11);
         done();
       });
   });
@@ -37,9 +69,10 @@ describe('cardfinder', () => {
       .get('/card/json?card=Smallpox')
       .end((err, res) => {
         validateMtgJson(res);
-        res.body.name.should.equal(`Smallpox`);
-        res.body.multiverseid.should.equal(237010);
-        res.body.imageUrl.should.equal('http://gatherer.wizards.com/Handlers/Image.ashx?type=card&multiverseid=237010');
+        res.body.length.should.equal(1);
+        res.body[0].name.should.equal(`Smallpox`);
+        res.body[0].multiverseid.should.equal(417484);
+        res.body[0].imageUrl.should.equal('http://gatherer.wizards.com/Handlers/Image.ashx?type=card&multiverseid=417484');
         done();
       });
   });
@@ -50,9 +83,10 @@ describe('cardfinder', () => {
       .end((err, res) => {
         validateMtgJson(res);
         // Response headers
-        res.body.name.should.equal(`Smallpox`);
-        res.body.multiverseid.should.equal(237010);
-        res.body.imageUrl.should.equal('/static/goofs/smallpox.png');
+        res.body.length.should.equal(1);
+        res.body[0].name.should.equal(`Smallpox`);
+        res.body[0].multiverseid.should.equal(417484);
+        res.body[0].imageUrl.should.equal('/static/goofs/smallpox.png');
         done();
       });
   });
@@ -77,7 +111,7 @@ describe('cardfinder', () => {
       });
   });
 
-  it('should return an image resource from GET /card/image with an invalid card name', (done) => {
+  it('should return a static image resource from GET /card/image with an invalid card name', (done) => {
     chai.request(server)
       .get('/card/image?card=INVALID_NAME')
       .end((err, res) => {
