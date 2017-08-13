@@ -3,6 +3,7 @@ const _ = require('lodash');
 const allSets = require('../data/AllSets.json');
 const goofs = require('../data/goofs.json');
 const search = require('./search');
+const shuffle = require('./shuffle');
 
 const multiverseUrl = 'http://gatherer.wizards.com/Handlers/Image.ashx?type=card&multiverseid=';
 
@@ -47,21 +48,26 @@ function getCardFromQuery(query) {
   const useGoof = query.goof !== undefined;
   const normalizedName = normalizeName(name);
   if (searchQuery)
-    return getCardsBySearch(searchQuery, 1)[0];
+    return search(cardList, searchQuery, 1)[0];
   if (useGoof && goofs && goofs[normalizedName])
     return Object.assign({}, cardMap[normalizedName], goofs[normalizedName]);
   return cardMap[normalizedName];
 }
 
 function getCardsFromQuery(query, limit) {
-  let searchLimit = limit || 1;
+  const sort = query.sort || `none`;
+  const searchLimit = limit || 1;
   const searchQuery = query.q || ``;
   const name = query.card || ``;
   const useGoof = query.goof !== undefined;
   const normalizedName = normalizeName(name);
   // Use search query
-  if (searchQuery)
-    return getCardsBySearch(searchQuery, searchLimit);
+  if (searchQuery) {
+    let listToSearch = cardList;
+    if (sort === `random`)
+      shuffle(listToSearch);
+    return search(listToSearch, searchQuery, searchLimit);
+  }
   // Use exact card search
   let result = cardMap[normalizedName];
   if (useGoof && goofs && goofs[normalizedName])
@@ -69,10 +75,6 @@ function getCardsFromQuery(query, limit) {
   if (result)
     return [result];
   return undefined;
-}
-
-function getCardsBySearch(q, limit) {
-  return search(cardList, q, limit);
 }
 
 module.exports = {
