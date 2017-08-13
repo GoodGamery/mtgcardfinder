@@ -35,10 +35,23 @@ function getCardFromQuery(query) {
   const useGoof = query.goof !== undefined;
   const normalizedName = normalizeName(name);
   if (searchQuery)
-    return getCardBySearch(searchQuery);
+    return getCardsBySearch(searchQuery, 1)[0];
   if (useGoof && goofs && goofs[normalizedName])
     return Object.assign({}, cardMap[normalizedName], goofs[normalizedName]);
   return cardMap[normalizedName];
+}
+
+function getCardsFromQuery(query, limit) {
+  let searchLimit = limit || 1;
+  const searchQuery = query.q || ``;
+  const name = query.card || ``;
+  const useGoof = query.goof !== undefined;
+  const normalizedName = normalizeName(name);
+  if (searchQuery)
+    return getCardsBySearch(searchQuery, searchLimit);
+  if (useGoof && goofs && goofs[normalizedName])
+    return [Object.assign({}, cardMap[normalizedName], goofs[normalizedName])];
+  return [cardMap[normalizedName]];
 }
 
 function getCard(name, useGoof) {
@@ -48,12 +61,13 @@ function getCard(name, useGoof) {
   return cardMap[normalizedName];
 }
 
-function getCardBySearch(q) {
-  return search(cardList, q, 1)[0];
+function getCardsBySearch(q, limit) {
+  return search(cardList, q, limit);
 }
 
 module.exports = {
   cardMap,
   getCard,
-  getCardFromQuery
+  getCardFromQuery,
+  getCardsFromQuery
 };

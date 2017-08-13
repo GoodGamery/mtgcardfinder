@@ -39,8 +39,26 @@ const getCardJson = (req, res) => {
   res.send(card);
 };
 
+const getCardJsonList = (req, res) => {
+  const limit = req.query.limit || 50;
+  const cards = MtgData.getCardsFromQuery(req.query, limit);
+  if (!cards)
+    return res.status(404).send(`No cards found for request card=${req.query.card} q=${req.query.q}`);
+  res.send(cards);
+};
+
+const getCardNameList = (req, res) => {
+  const limit = req.query.limit || 50;
+  const cards = MtgData.getCardsFromQuery(req.query, limit);
+  if (!cards)
+    return res.status(404).send(`No cards found for request card=${req.query.card} q=${req.query.q}`);
+  res.send(cards.map(card => card.name).join(`;`));
+};
+
 module.exports = {
   getCardImage: getCardImage,
   getCardHtml: getCardHtml,
-  getCardJson: getCardJson
+  getCardJson: getCardJson,
+  getCardJsonList: getCardJsonList,
+  getCardNameList: getCardNameList
 };
