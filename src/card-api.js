@@ -58,7 +58,7 @@ const getCardNameList = (req, res) => {
   const cards = MtgData.getCardsFromQuery(req.query, limit);
   if (!cards || cards.length === 0)
     return res.status(404).send(`No cards found for request card=${req.query.card} q=${req.query.q}`);
-  res.send(cards.map(card => card.name).join(`\n`));
+  res.contentType(`text/plain`).send(cards.map(card => card.name).join(`\n`));
 };
 
 const coerceNumber = (sourceValue, defaultValue, min, max) => {

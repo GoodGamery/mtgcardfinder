@@ -24,11 +24,6 @@ const validateMtgJson = (res) => {
   res.body[0].should.have.property('imageUrl');
 };
 
-const validateMtgName = (res) => {
-  res.should.have.status(200);
-  res.type.should.equal(`text/html`);
-};
-
 describe('cardfinder', () => {
   it('should return JSON from GET (plains) /card/json', (done) => {
     chai.request(server)
@@ -47,7 +42,8 @@ describe('cardfinder', () => {
     chai.request(server)
       .get('/card/name?card=Plains')
       .end((err, res) => {
-        validateMtgName(res);
+        res.should.have.status(200);
+        res.type.should.equal(`text/plain`);
         res.text.should.equal(`Plains`);
         done();
       });
