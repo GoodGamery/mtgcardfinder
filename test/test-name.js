@@ -24,39 +24,39 @@ const validateMtgJson = (res) => {
   res.body[0].should.have.property('imageUrl');
 };
 
-describe('type search', () => {
-  it('should return 12 unicorns', (done) => {
+describe('name search', () => {
+  it('should return 20 Mogg cards', (done) => {
     chai.request(server)
-      .get('/card/json?q=t:Unicorn')
+      .get('/card/json?q=name:Mogg')
       .end((err, res) => {
         validateMtgJson(res);
-        res.body.length.should.equal(12);
-        res.body.forEach(c => c.type.should.contain(`Unicorn`));
+        res.body.length.should.equal(20);
+        res.body.forEach(c => c.name.toLowerCase().should.contain(`mogg`));
         done();
       });
   });
 
-  it('should return 18 legendary goblins', (done) => {
+  it('should return 2 Wizard Coast cards', (done) => {
     chai.request(server)
-      .get('/card/json?q=t:Goblin t:Legendary')
+      .get('/card/json?q=name:Wizard name:Coast')
       .end((err, res) => {
         validateMtgJson(res);
-        res.body.length.should.equal(18);
-        res.body.forEach(c => c.type.should.contain(`Legendary`));
-        res.body.forEach(c => c.type.should.contain(`Goblin`));
+        res.body.length.should.equal(2);
+        res.body.forEach(c => c.name.toLowerCase().should.contain(`wizard`));
+        res.body.forEach(c => c.name.toLowerCase().should.contain(`coast`));
         done();
       });
   });
 
-  it('should return 9 legendary artifact creatures', (done) => {
+  it('should return 3 xyz cards', (done) => {
     chai.request(server)
-      .get('/card/json?q=t:Creature t:Legendary t:Artifact')
+      .get('/card/json?q=name:x name:y name:z')
       .end((err, res) => {
         validateMtgJson(res);
-        res.body.length.should.equal(9);
-        res.body.forEach(c => c.type.should.contain(`Legendary`));
-        res.body.forEach(c => c.type.should.contain(`Artifact`));
-        res.body.forEach(c => c.type.should.contain(`Creature`));
+        res.body.length.should.equal(3);
+        res.body.forEach(c => c.name.toLowerCase().should.contain(`x`));
+        res.body.forEach(c => c.name.toLowerCase().should.contain(`y`));
+        res.body.forEach(c => c.name.toLowerCase().should.contain(`z`));
         done();
       });
   });
