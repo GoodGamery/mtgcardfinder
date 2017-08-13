@@ -71,20 +71,12 @@ function getCardsFromQuery(query, limit) {
   return undefined;
 }
 
-function getCard(name, useGoof) {
-  const normalizedName = normalizeName(name);
-  if (useGoof && goofs && goofs[normalizedName])
-    return Object.assign({}, cardMap[normalizedName], goofs[normalizedName]);
-  return cardMap[normalizedName];
-}
-
 function getCardsBySearch(q, limit) {
   return search(cardList, q, limit);
 }
 
 module.exports = {
   cardMap,
-  getCard,
   getCardFromQuery,
   getCardsFromQuery
 };
