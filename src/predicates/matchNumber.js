@@ -1,4 +1,6 @@
 const matchNumber = (searchProp, cardNum) => {
+  if (cardNum === undefined)
+    return false;
   const re = /([<>=]*)(.+)/;  // "<=0.5"
   const matches = searchProp.match(re);
   if (matches.length === 3) {
