@@ -36,11 +36,10 @@ node_modules/
 # environment file
 .env
 
-# logging
-*.log
-
-
 # output folders
 build/
 out/
 tmp/
+
+# Test coverage output
+.nyc_output/

@@ -28,6 +28,7 @@
     "gulp-jsonlint": "1.2.0",
     "gulp-util": "3.0.8",
     "mocha": "3.5.0",
+    "nyc": "^11.1.0",
     "run-sequence": "2.0.0"
   },
   "eslintConfig": {
