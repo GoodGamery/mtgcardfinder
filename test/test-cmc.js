@@ -37,6 +37,42 @@ describe('cmc search', () => {
       });
   });
 
+  it('should return 5 cards with cmc 15', (done) => {
+    chai.request(server)
+      .get('/card/json?q=cmc:15')
+      .end((err, res) => {
+        validateMtgJson(res);
+        // Cards with cost 15
+        res.body.length.should.equal(4);
+        res.body.forEach(c => c.cmc.should.equal(15));
+        done();
+      });
+  });
+
+  it('should return 0 cards with invalid cmc comparison', (done) => {
+    chai.request(server)
+      .get('/card/json?q=cmc:abc')
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.type.should.equal(`application/json`);
+        res.body.should.be.a('array');
+        res.body.length.should.equal(0);
+        done();
+      });
+  });
+
+  it('should return 0 cards with invalid cmc operator', (done) => {
+    chai.request(server)
+      .get('/card/json?q=cmc:===10')
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.type.should.equal(`application/json`);
+        res.body.should.be.a('array');
+        res.body.length.should.equal(0);
+        done();
+      });
+  });
+
   it('should return 2 cards with cmc > 15', (done) => {
     chai.request(server)
       .get('/card/json?q=cmc:>15')
@@ -56,7 +92,7 @@ describe('cmc search', () => {
         validateMtgJson(res);
         // Cards with cost 15 or higher
         res.body.length.should.equal(6);
-        res.body.forEach(c => c.cmc.should.be.greaterThan(14.99));
+        res.body.forEach(c => c.cmc.should.be.at.least(15));
         done();
       });
   });
@@ -69,6 +105,18 @@ describe('cmc search', () => {
         // Cards with cost 15 or higher
         res.body.length.should.equal(10);
         res.body.forEach(c => c.cmc.should.be.lessThan(1));
+        done();
+      });
+  });
+
+  it('should return 10 cards cmc <= 0', (done) => {
+    chai.request(server)
+      .get('/card/json?q=cmc:<=0&limit=10')
+      .end((err, res) => {
+        validateMtgJson(res);
+        // Cards with cost 15 or higher
+        res.body.length.should.equal(10);
+        res.body.forEach(c => c.cmc.should.be.at.most(1));
         done();
       });
   });
