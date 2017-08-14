@@ -3,6 +3,9 @@ logs
 *.log
 npm-debug.log*
 
+# Coverage from tests
+coverage/
+
 # ugh
 package-lock.json
 

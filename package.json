@@ -9,7 +9,9 @@
     "start": "node server",
     "lint": "gulp lint",
     "watch": "gulp",
-    "test": "mocha"
+    "test": "npm run test-mocha",
+    "test-mocha": "./node_modules/mocha/bin/_mocha --ui bdd",
+    "test-coverage": "./node_modules/nyc/bin/nyc.js --extension=.js npm run test-mocha"
   },
   "license": "MIT",
   "dependencies": {
@@ -28,7 +30,7 @@
     "gulp-jsonlint": "1.2.0",
     "gulp-util": "3.0.8",
     "mocha": "3.5.0",
-    "nyc": "^11.1.0",
+    "nyc": "11.1.0",
     "run-sequence": "2.0.0"
   }
 }
