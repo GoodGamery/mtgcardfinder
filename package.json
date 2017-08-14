@@ -9,7 +9,10 @@
     "start": "node server",
     "lint": "gulp lint",
     "watch": "gulp",
-    "test": "mocha"
+    "test": "npm run test-coverage",
+    "test-mocha": "./node_modules/mocha/bin/_mocha --ui bdd",
+    "test-coverage": "./node_modules/nyc/bin/nyc.js --extension=.js npm run test-mocha",
+    "coverage": "./node_modules/nyc/bin/nyc.js report --reporter=text-lcov > coverage.lcov && ./node_modules/codecov/bin/codecov"
   },
   "license": "MIT",
   "dependencies": {
@@ -21,6 +24,7 @@
   "devDependencies": {
     "chai": "4.1.1",
     "chai-http": "3.0.0",
+    "codecov": "^2.3.0",
     "eslint": "4.2.0",
     "gulp": "3.9.1",
     "gulp-debug": "3.1.0",
@@ -28,33 +32,7 @@
     "gulp-jsonlint": "1.2.0",
     "gulp-util": "3.0.8",
     "mocha": "3.5.0",
-    "nyc": "^11.1.0",
+    "nyc": "11.1.0",
     "run-sequence": "2.0.0"
-  },
-  "eslintConfig": {
-    "extends": "eslint:recommended",
-    "parserOptions": {
-      "ecmaVersion": 6
-    },
-    "env": {
-      "node": true,
-      "es6": true
-    },
-    "rules": {
-      "no-console": 0,
-      "no-mixed-spaces-and-tabs": 1,
-      "no-unused-expressions": 1,
-      "no-unused-vars": [
-        1,
-        {
-          "vars": "all",
-          "args": "after-used"
-        }
-      ],
-      "semi": [
-        2,
-        "always"
-      ]
-    }
   }
 }
