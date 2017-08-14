@@ -3,7 +3,8 @@
 A node server that serves searchable card data and images for MTG.
 
 
-![Travis CI Build Status](https://travis-ci.org/GoodGamery/mtgcardfinder.svg?branch=master "Travis CI Build Status")
+[![Travis CI Build Status](https://travis-ci.org/GoodGamery/mtgcardfinder.svg?branch=master "Travis CI Build Status")](https://travis-ci.org/GoodGamery/mtgcardfinder)
+[![codecov](https://codecov.io/gh/GoodGamery/mtgcardfinder/branch/master/graph/badge.svg)](https://codecov.io/gh/GoodGamery/mtgcardfinder)
 
 To run:
 
