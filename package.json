@@ -30,31 +30,5 @@
     "mocha": "3.5.0",
     "nyc": "^11.1.0",
     "run-sequence": "2.0.0"
-  },
-  "eslintConfig": {
-    "extends": "eslint:recommended",
-    "parserOptions": {
-      "ecmaVersion": 6
-    },
-    "env": {
-      "node": true,
-      "es6": true
-    },
-    "rules": {
-      "no-console": 0,
-      "no-mixed-spaces-and-tabs": 1,
-      "no-unused-expressions": 1,
-      "no-unused-vars": [
-        1,
-        {
-          "vars": "all",
-          "args": "after-used"
-        }
-      ],
-      "semi": [
-        2,
-        "always"
-      ]
-    }
   }
 }
