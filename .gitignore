@@ -5,6 +5,8 @@ npm-debug.log*
 
 # Coverage from tests
 coverage/
+coverage.lcov
+.nyc_output/
 
 # ugh
 package-lock.json
@@ -38,11 +40,3 @@ node_modules/
 
 # environment file
 .env
-
-# output folders
-build/
-out/
-tmp/
-
-# Test coverage output
-.nyc_output/

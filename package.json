@@ -11,7 +11,8 @@
     "watch": "gulp",
     "test": "npm run test-mocha",
     "test-mocha": "./node_modules/mocha/bin/_mocha --ui bdd",
-    "test-coverage": "./node_modules/nyc/bin/nyc.js --extension=.js npm run test-mocha"
+    "test-coverage": "./node_modules/nyc/bin/nyc.js --extension=.js npm run test-mocha",
+    "coverage": "./node_modules/nyc/bin/nyc.js report --reporter=text-lcov > coverage.lcov && ./node_modules/codecov/bin/codecov"
   },
   "license": "MIT",
   "dependencies": {
@@ -23,6 +24,7 @@
   "devDependencies": {
     "chai": "4.1.1",
     "chai-http": "3.0.0",
+    "codecov": "^2.3.0",
     "eslint": "4.2.0",
     "gulp": "3.9.1",
     "gulp-debug": "3.1.0",
@@ -31,6 +33,7 @@
     "gulp-util": "3.0.8",
     "mocha": "3.5.0",
     "nyc": "11.1.0",
-    "run-sequence": "2.0.0"
+    "run-sequence": "2.0.0",
+    "tap": "^0.7.2"
   }
 }
