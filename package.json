@@ -9,7 +9,7 @@
     "start": "node server",
     "lint": "gulp lint",
     "watch": "gulp",
-    "test": "npm run test-mocha",
+    "test": "npm run test-coverage",
     "test-mocha": "./node_modules/mocha/bin/_mocha --ui bdd",
     "test-coverage": "./node_modules/nyc/bin/nyc.js --extension=.js npm run test-mocha",
     "coverage": "./node_modules/nyc/bin/nyc.js report --reporter=text-lcov > coverage.lcov && ./node_modules/codecov/bin/codecov"
