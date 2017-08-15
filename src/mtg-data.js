@@ -7,6 +7,8 @@ const shuffle = require('./shuffle');
 
 const multiverseUrl = 'http://gatherer.wizards.com/Handlers/Image.ashx?type=card&multiverseid=';
 
+const RANDOM = `random`;
+
 const cardListOriginal = _.flatMap(allSets, (set) => set.cards);
 const cardListEnhanced = _.map(cardListOriginal, (card) =>
   Object.assign({}, card, {
@@ -42,13 +44,20 @@ const cardList = Object.keys(cardMap).map(k => cardMap[k]);
 
 console.log(`Cards loaded: ${cardList.length}`);
 
-function getCardFromQuery(query) {
+function getSingleCardFromQuery(query) {
   const searchQuery = query.q || ``;
   const name = query.card || ``;
   const useGoof = query.goof !== undefined;
   const normalizedName = normalizeName(name);
-  if (searchQuery)
-    return search(cardList, searchQuery, 1)[0];
+  const sort = query.sort || `none`;
+  if (searchQuery) {
+    let listToSearch = cardList;
+    if (sort === RANDOM)
+      shuffle(listToSearch);
+    let card = search(listToSearch, searchQuery, 1)[0];
+    card.isRandom = sort === RANDOM;
+    return card;
+  }
   if (useGoof && goofs && goofs[normalizedName])
     return Object.assign({}, cardMap[normalizedName], goofs[normalizedName]);
   return cardMap[normalizedName];
@@ -64,7 +73,7 @@ function getCardsFromQuery(query, limit) {
   // Use search query
   if (searchQuery) {
     let listToSearch = cardList;
-    if (sort === `random`)
+    if (sort === RANDOM)
       shuffle(listToSearch);
     return search(listToSearch, searchQuery, searchLimit);
   }
@@ -79,6 +88,6 @@ function getCardsFromQuery(query, limit) {
 
 module.exports = {
   cardMap,
-  getCardFromQuery,
+  getSingleCardFromQuery,
   getCardsFromQuery
 };

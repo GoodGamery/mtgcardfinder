@@ -6,7 +6,7 @@ const path = require('path');
 const MtgData = require('./mtg-data');
 
 const getCardImage = (req, res, next) => {
-  const card = MtgData.getCardFromQuery(req.query);
+  const card = MtgData.getSingleCardFromQuery(req.query);
   if (!card || !card.multiverseid) {
     fs.createReadStream(path.join(__dirname, `..`, `static`, `images`, `cardback.jpg`))
       .on(`error`, (err) => next(err))
@@ -19,6 +19,8 @@ const getCardImage = (req, res, next) => {
         .on(`error`, (err) => next(err))
         .pipe(res);
     } else {
+      if (card.isRandom)
+        res.set(`Cache-Control`, `no-cache, no-store`);
       request.get(url).pipe(res);
     }
   }
