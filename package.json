@@ -10,9 +10,9 @@
     "lint": "gulp lint",
     "watch": "gulp",
     "test": "npm run test-coverage",
-    "test-mocha": "./node_modules/mocha/bin/_mocha --ui bdd",
-    "test-coverage": "./node_modules/nyc/bin/nyc.js --extension=.js npm run test-mocha",
-    "coverage": "./node_modules/nyc/bin/nyc.js report --reporter=text-lcov > coverage.lcov && ./node_modules/codecov/bin/codecov"
+    "test-mocha": "node ./node_modules/mocha/bin/_mocha --ui bdd",
+    "test-coverage": "node ./node_modules/nyc/bin/nyc.js --extension=.js npm run test-mocha",
+    "coverage": "node ./node_modules/nyc/bin/nyc.js report --reporter=text-lcov > coverage.lcov && ./node_modules/codecov/bin/codecov"
   },
   "license": "MIT",
   "dependencies": {

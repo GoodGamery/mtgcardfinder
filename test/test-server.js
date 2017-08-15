@@ -49,6 +49,17 @@ describe('cardfinder', () => {
       });
   });
 
+  it('should return card name from GET (plains) /card/html', (done) => {
+    chai.request(server)
+      .get('/card/html?card=Plains')
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.type.should.equal(`text/html`);
+        res.text.should.contain(`http://gatherer.wizards.com/Handlers/Image.ashx?type=card&multiverseid=430880`);
+        done();
+      });
+  });
+
   it('should return exactly 11 cards from GET (q=t:Basic) /card/json', (done) => {
     chai.request(server)
       .get('/card/json?q=t:Basic')

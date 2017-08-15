@@ -27,7 +27,7 @@ const getCardImage = (req, res, next) => {
 const getCardHtml = (req, res) => {
   const limit = coerceNumber(req.query.limit, 25, 1, 50);
   const cards = MtgData.getCardsFromQuery(req.query, limit);
-  if (cards.length > 0) {
+  if (cards && cards.length > 0) {
     const htmlResults = cards
       .map(card => card && card.imageUrl
       ? `<img src="${card.imageUrl}"></img>`

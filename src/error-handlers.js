@@ -7,7 +7,7 @@ function logErrors (err, req, res, next) {
 
 function clientErrorHandler (err, req, res, next) {
   if (req.xhr) {
-    res.status(500).send({ error: 'Something failed!' });
+    res.status(500).send({ error: 'Unhandled server error.' });
   } else {
     next(err);
   }
