@@ -55,7 +55,8 @@ function getSingleCardFromQuery(query) {
     if (sort === RANDOM)
       shuffle(listToSearch);
     let card = search(listToSearch, searchQuery, 1)[0];
-    card.isRandom = sort === RANDOM;
+    if (card)
+      card.isRandom = sort === RANDOM;
     return card;
   }
   if (useGoof && goofs && goofs[normalizedName])
