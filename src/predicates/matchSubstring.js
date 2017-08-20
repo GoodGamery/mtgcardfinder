@@ -1,13 +1,9 @@
-// needle is a space-delimited string of substrings that should exist in
-// the haystack. Return true if they ALL do.
+// needle is a string that should exist in
+// the haystack. Return true if it does.
 const matchSubstring = (needle, haystack) => {
-  if (!haystack) {
-    return undefined;
-  }
- const lowerHaystack = haystack.toLowerCase(); 
-  const needleArray = needle.toLowerCase().split(` `);
-  return !needleArray
-    .find(t => !lowerHaystack.includes(t));
+  return haystack && needle
+    && haystack.toLowerCase()
+      .includes(needle.toLowerCase());
 };
 
 module.exports = matchSubstring;

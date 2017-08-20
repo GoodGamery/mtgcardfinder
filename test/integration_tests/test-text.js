@@ -3,7 +3,7 @@ process.env.NODE_ENV = 'test';
 
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const server = require('../app');
+const server = require('../../app');
 
 const TEST_PORT = 3031 + Math.floor(Math.random() * 10000);
 server.listen(TEST_PORT, () => {
@@ -24,15 +24,13 @@ const validateMtgJson = (res) => {
   res.body[0].should.have.property('imageUrl');
 };
 
-describe('pow/tou search', () => {
-  it('should return 3 cards with low power and high toughness', (done) => {
+describe('card text search', () => {
+  it('should allow quoted strings', (done) => {
     chai.request(server)
-      .get('/card/json?q=pow:<4 tou:>9')
+      .get('/card/json?limit=10&q=text:"you control:"')
       .end((err, res) => {
         validateMtgJson(res);
-        res.body.length.should.equal(3);
-        res.body.forEach(c => Number(c.power).should.be.lessThan(4));
-        res.body.forEach(c => Number(c.toughness).should.be.greaterThan(9));
+        res.body.length.should.equal(10);
         done();
       });
   });

@@ -2,15 +2,15 @@
 
 const and = require('./predicates/and');
 const predicates = require('./predicates/');
+const queryParser = require('./query-parser');
 
 // Search interface:
 //   ?q=t:"golem"+mana=5
 // t:"legendary goblin" c:brm mana>1 pow>=2
 
 function search(cardList, q, limit) {
-  const searchTerms = q.split(` `);
-  const predicateList = searchTerms
-    .map(term => getPredicate(term));
+  const searchTerms = queryParser(q);
+  const predicateList = searchTerms.map(term => getPredicate(term.tag, term.query));
   const predicate = and.apply(null, predicateList);
   return take(cardList, predicate, limit);
 }
@@ -25,17 +25,11 @@ function take(list, predicate, limit) {
   return results;
 }
 
-function getPredicate(term) {
-  const parts = term.split(`:`);
-  if (parts.length === 2) {
-    const tag = parts[0];
-    const query = parts[1];
-    if (predicates[tag])
-      return predicates[tag].bind(null, query);
-    else
-      console.info(`No handler for search tag ${tag}`);
-  }
-  console.info(`Bad search term: "${term}"`);
+function getPredicate(tag, query) {
+  if (predicates[tag])
+    return predicates[tag].bind(null, query);
+  else
+    console.info(`No handler for search tag ${tag}`);
   return () => true;
 }
 
