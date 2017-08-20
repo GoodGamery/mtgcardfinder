@@ -8,9 +8,19 @@ const predicates = require('./predicates/');
 // t:"legendary goblin" c:brm mana>1 pow>=2
 
 function search(cardList, q, limit) {
-  const searchTerms = q.split(` `);
-  const predicateList = searchTerms
-    .map(term => getPredicate(term));
+  const searchTerms = q.split(/ ?(\w+):/g)
+    .filter(s => s !== "")
+    .map(s => s.replace(/"/g, ``));
+
+  if (searchTerms.length % 2 !== 0) {
+    console.info(`Bad number of search terms: q=${q}`);
+  }
+
+  let predicateList = [];
+
+  for(let i = 0; i < searchTerms.length; i += 2) {
+    predicateList.push(getPredicate(searchTerms[i], searchTerms[i+1]));
+  }
   const predicate = and.apply(null, predicateList);
   return take(cardList, predicate, limit);
 }
@@ -25,17 +35,11 @@ function take(list, predicate, limit) {
   return results;
 }
 
-function getPredicate(term) {
-  const parts = term.split(`:`);
-  if (parts.length === 2) {
-    const tag = parts[0];
-    const query = parts[1];
-    if (predicates[tag])
-      return predicates[tag].bind(null, query);
-    else
-      console.info(`No handler for search tag ${tag}`);
-  }
-  console.info(`Bad search term: "${term}"`);
+function getPredicate(tag, query) {
+  if (predicates[tag])
+    return predicates[tag].bind(null, query);
+  else
+    console.info(`No handler for search tag ${tag}`);
   return () => true;
 }
 
