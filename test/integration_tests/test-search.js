@@ -3,7 +3,7 @@ process.env.NODE_ENV = 'test';
 
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const server = require('../app');
+const server = require('../../app');
 
 const TEST_PORT = 3031 + Math.floor(Math.random() * 10000);
 server.listen(TEST_PORT, () => {

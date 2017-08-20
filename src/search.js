@@ -2,25 +2,15 @@
 
 const and = require('./predicates/and');
 const predicates = require('./predicates/');
+const queryParser = require('./query-parser');
 
 // Search interface:
 //   ?q=t:"golem"+mana=5
 // t:"legendary goblin" c:brm mana>1 pow>=2
 
 function search(cardList, q, limit) {
-  const searchTerms = q.split(/ ?(\w+):/g)
-    .filter(s => s !== "")
-    .map(s => s.replace(/"/g, ``));
-
-  if (searchTerms.length % 2 !== 0) {
-    console.info(`Bad number of search terms: q=${q}`);
-  }
-
-  let predicateList = [];
-
-  for(let i = 0; i < searchTerms.length; i += 2) {
-    predicateList.push(getPredicate(searchTerms[i], searchTerms[i+1]));
-  }
+  const searchTerms = queryParser(q);
+  const predicateList = searchTerms.map(term => getPredicate(term.tag, term.query));
   const predicate = and.apply(null, predicateList);
   return take(cardList, predicate, limit);
 }

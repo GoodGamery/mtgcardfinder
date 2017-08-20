@@ -1,5 +1,5 @@
 const matchNumber = (searchProp, cardNum) => {
-  if (cardNum === undefined)
+  if (typeof cardNum !== `number`)
     return false;
   const re = /([<>=]*)(.+)/;  // "<=0.5"
   const matches = searchProp.match(re);
@@ -13,6 +13,7 @@ const matchNumber = (searchProp, cardNum) => {
       case `<=`: return cardNum  <= queryNum;
       case `=`:  return cardNum === queryNum;
       case ``:   return cardNum === queryNum;
+      case `<>`: return cardNum !== queryNum;
     }
   }
   return false;
