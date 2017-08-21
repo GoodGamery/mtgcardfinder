@@ -4,5 +4,6 @@ module.exports = {
   name: require('./matchName'),
   pow: require('./matchPower'),
   tou: require('./matchToughness'),
-  text: require('./matchText')
+  text: require('./matchText'),
+  set: require('./matchSet')
 };

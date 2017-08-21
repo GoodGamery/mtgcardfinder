@@ -9,7 +9,11 @@ const multiverseUrl = 'http://gatherer.wizards.com/Handlers/Image.ashx?type=card
 
 const RANDOM = `random`;
 
-const cardListOriginal = _.flatMap(allSets, (set) => set.cards);
+const cardListOriginal = _.flatMap(allSets, set => {
+    set.cards.forEach(card => card.set = set.name);
+    return set.cards;
+  });
+
 const cardListEnhanced = _.map(cardListOriginal, (card) =>
   Object.assign({}, card, {
     imageUrl: card.multiverseid ? `${multiverseUrl}${card.multiverseid}` : undefined
