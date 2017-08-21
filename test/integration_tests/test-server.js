@@ -128,4 +128,56 @@ describe('cardfinder', () => {
         done();
       });
   });
+
+  it('should return a random image when asking for sort=random', (done) => {
+    chai.request(server)
+      .get('/card/image?sort=random&q=t:"legendary creature"')
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.type.should.equal(`image/jpeg`);
+        res.body.length.should.above(10000);
+        done();
+      });
+  });
+
+  it('should return random cards from sort=random', (done) => {
+    chai.request(server)
+      .get('/card/json?sort=random&q=t:"legendary creature"')
+      .end((err, res) => {
+        validateMtgJson(res);
+        res.body.length.should.equal(25);
+        done();
+      });
+  });
+
+  it('should return 404 when asking for card names for a search with zero results', (done) => {
+    chai.request(server)
+      .get('/card/name?q=pow:<5 pow:>5')
+      .end((err, res) => {
+        res.should.have.status(404);
+        done();
+      });
+  });
+
+  it('should return an image/png for smallpox goof', (done) => {
+    chai.request(server)
+      .get('/card/image?card=Smallpox&goof')
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.type.should.equal(`image/png`);
+        res.body.length.should.above(10000);
+        done();
+      });
+  });
+
+  it('should return an image/jpeg for blurred mongoose goof', (done) => {
+    chai.request(server)
+      .get('/card/image?card=blurred mongoose&goof')
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.type.should.equal(`image/jpeg`);
+        res.body.length.should.above(10000);
+        done();
+      });
+  });
 });

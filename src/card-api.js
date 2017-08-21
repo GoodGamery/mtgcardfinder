@@ -14,6 +14,10 @@ const getCardImage = (req, res, next) => {
   } else {
     const url = card.imageUrl;
     if (url.startsWith(`/static/`)) {
+      if (url.endsWith(`.png`))
+        res.contentType(`image/png`);
+      if (url.endsWith(`.jpg`))
+        res.contentType(`image/jpeg`);
       // Patch url for static image resources
       fs.createReadStream(path.join(__dirname, `..`, url))
         .on(`error`, (err) => next(err))
