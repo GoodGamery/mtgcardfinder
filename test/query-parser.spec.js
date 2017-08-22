@@ -11,19 +11,22 @@ describe('query parser', () => {
   it('should parse single queries', done => {
     const results = qParser("tag:query");
     results.length.should.equal(1);
-    const result = results[0];
-    result.tag.should.equal(`tag`);
-    result.query.should.equal(`query`);
+    results[0].type.should.equal(`term`);
+    results[0].tag.should.equal(`tag`);
+    results[0].query.should.equal(`query`);
     done();
   });
 
   it('should parse multiple queries', done => {
     const results = qParser("a:b c:d e:f");
     results.length.should.equal(3);
+    results[0].type.should.equal(`term`);
     results[0].tag.should.equal(`a`);
     results[0].query.should.equal(`b`);
+    results[1].type.should.equal(`term`);
     results[1].tag.should.equal(`c`);
     results[1].query.should.equal(`d`);
+    results[2].type.should.equal(`term`);
     results[2].tag.should.equal(`e`);
     results[2].query.should.equal(`f`);
     done();
@@ -127,4 +130,40 @@ describe('query parser', () => {
     done();
   });
 
+  it ('should parse "or" between terms', done => {
+    const results = qParser(`a:b or c:d`);
+    results.length.should.equal(3);
+    results[0].tag.should.equal(`a`);
+    results[0].query.should.equal(`b`);
+    results[1].type.should.equal(`operator`);
+    results[1].operator.should.equal(`or`);
+    results[2].tag.should.equal(`c`);
+    results[2].query.should.equal(`d`);
+    done();
+  });
+
+  it ('should treat "or" after colon as a query', done => {
+    const results = qParser(`a:or`);
+    results.length.should.equal(1);
+    results[0].tag.should.equal(`a`);
+    results[0].query.should.equal(`or`);
+    done();
+  });
+
+  it ('should treat colon after "or" as an error', done => {
+    const results = qParser(`or:b`);
+    results.length.should.equal(1);
+    results[0].type.should.equal(`operator`);
+    results[0].operator.should.equal(`or`);
+    done();
+  });
+
+  it ('should treat "or" in quoted queries as text', done => {
+    const results = qParser(`name:"Fact or Fiction"`);
+    results.length.should.equal(1);
+    results[0].type.should.equal(`term`);
+    results[0].tag.should.equal(`name`);
+    results[0].query.should.equal(`Fact or Fiction`);
+    done();
+  });
 });

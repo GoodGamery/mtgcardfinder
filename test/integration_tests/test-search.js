@@ -51,4 +51,15 @@ describe('search feature', () => {
       });
   });
 
+  it('should find Fact or Fiction', (done) => {
+    chai.request(server)
+      .get('/card/json?q=name:"Fact+or+Fiction"')
+      .end((err, res) => {
+        validateMtgJson(res);
+        res.body.length.should.equal(1);
+        res.body[0].name.should.equal(`Fact or Fiction`);
+        done();
+      });
+  });
+
 });

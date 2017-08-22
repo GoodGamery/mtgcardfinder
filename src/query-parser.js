@@ -1,109 +1,33 @@
+const Lexer = require('./parser/lexer');
+const StateDef = require('./parser/state-def');
+const Term = require('./parser/term');
+const Operator = require('./parser/operator');
 
 const queryParser = (q) => {
-  const tokens = tokenize(q);
+  const tokens = Lexer.tokenize(q);
   return parse(tokens);
 };
 
-const tokenize = (sourceString) => {
-  const stringTokens = sourceString
-    .split(/( )|(:)|(")/g)
-    .filter(text => text);
-  return stringTokens.map(s => {
-    if (s === `:`)
-      return { type: `colon`, value: s };
-    if (s === `"`)
-      return { type: `quote`, value: s };
-    if (s === " ")
-      return { type: `space`, value: s };
-    return { type: `text`, value: s };
-  });
+const TAG    = new StateDef(0, `TAG`);
+const COLON  = new StateDef(1, `COLON`);
+const QUERY  = new StateDef(2, `QUERY`);
+const S_QQUERY = new StateDef(3, `QUOTED QUERY`);
+const S_ERR    = new StateDef(4, `ERROR`);
+
+const debugLog = (text) => {
+  if (process.env.NODE_ENV === `test`)
+    console.log(text);
 };
-
-const STATE_TAG = Symbol(`TAG`);
-const STATE_COLON = Symbol(`COLON`);
-const STATE_QUERY = Symbol(`QUERY`);
-const STATE_QUERY_QUOTE = Symbol(`QUERY_QUOTE`);
-const STATE_ERROR = Symbol(`ERROR`);
-
-const processTag = (token, state) => {
-  switch(token.type) {
-    case `colon`:
-      console.log(`Expecting a tag, not a colon.`);
-      return STATE_ERROR;
-    case `quote`:
-      console.log(`Expecting a tag, not a quote.`);
-      return STATE_ERROR;
-    case `space`: // Skip spaces before tags
-      return STATE_TAG;
-    case `text`:
-      state.setTag(token.value);
-      return STATE_COLON;
-  }
-};
-
-const processColon = (token, state) => {
-  switch(token.type) {
-    case `colon`:
-      return STATE_QUERY;
-
-    case `quote`:
-      console.log(`Didn't expect quote after query tag "${state.tag}". There should be a colon here.`);
-      return STATE_ERROR;
-
-    case `space`: // Skip spaces before the colon
-      return STATE_COLON;
-
-    case `text`:
-      console.log(`Didn't expect text after query tag "${state.tag}". There should be a colon here.`);
-      return STATE_ERROR;
-  }
-};
-
-const processQuery = (token, state) => {
-  switch(token.type) {
-    case `colon`:
-      console.log(`Didn't expect another colon after the colon. There should be a quote or text here.`);
-      return STATE_ERROR;
-
-    case `space`: // Skip spaces after the colon
-      return STATE_QUERY;
-
-    case `quote`: // If the first token of a query is a quote, this is a quoted query
-      return STATE_QUERY_QUOTE;
-
-    case `text`: // If the first token of a query is text, then it's a single-text query
-      state.addText(token.value);
-      state.finish();
-      return STATE_TAG;
-  }
-};
-
-const processQueryQuote = (token, state) => {
-  switch(token.type) {
-    case `quote`:
-      state.finish();
-      return STATE_TAG;
-
-    default:  // Anything other than a quote is interpreted as text
-      state.addText(token.value);
-      return STATE_QUERY_QUOTE;
-  }
-};
-
-let dispatch = {};
-dispatch[STATE_TAG] = processTag;
-dispatch[STATE_COLON] = processColon;
-dispatch[STATE_QUERY] = processQuery;
-dispatch[STATE_QUERY_QUOTE] = processQueryQuote;
 
 class ParseState {
   constructor() {
     this.tag = ``;
     this.query = [];
     this.terms = [];
+    this.state = TAG;
   }
 
-  resetState() {
+  resetTagAndQuery() {
     this.tag = ``;
     this.query = [];
   }
@@ -112,34 +36,94 @@ class ParseState {
     this.query.push(text);
   }
 
+  addOperator(operator) {
+    this.terms.push(new Operator(operator));
+    this.resetTagAndQuery();
+  }
+
   setTag(text) {
     this.tag = text;
   }
 
   finish() {
-    this.terms.push({
-      tag: this.tag,
-      query: this.query.join(``)
-    });
-    this.resetState();
+    this.terms.push(new Term(this.tag, this.query.join(``)));
+    this.resetTagAndQuery();
   }
 }
 
+const err = (parseState, token) => {
+  debugLog(`!err : Can't process token ${token.type} when in state ${parseState.state}`);
+  return S_ERR;
+};
+
+const text = (parseState, token) => {
+  debugLog(`!text : "${token.value}"`);
+  parseState.addText(token.value);
+  return parseState.state;
+};
+
+const finish = (parseState) => {
+  debugLog(`!finish : ${parseState.terms.join('')}`);
+  parseState.finish();
+  return TAG;
+};
+
+const textFin = (parseState, token) => {
+  debugLog(`!textFin : "${token.value}"`);
+  parseState.addText(token.value);
+  parseState.finish();
+  return TAG;
+};
+
+const op = (parseState, token) => {
+  debugLog(`!op : ${token.value}`);
+  parseState.addOperator(token.value);
+  return TAG;
+};
+
+const tag = (parseState, token) => {
+  debugLog(`!tag : "${token.value}"`);
+  parseState.setTag(token.value);
+  return COLON;
+};
+
+const next = (parseState) => {
+  debugLog(`!next : ${parseState.state}`);
+  return parseState.state;
+};
+
+const parserTransitionMatrix =
+  //             TAG   COLON    QUERY     QQUERY   ERR
+  {    colon: [  err,  QUERY,   err,      text,    S_ERR]
+  ,    quote: [  err,  err,     S_QQUERY, finish,  S_ERR]
+  ,    space: [  next, next,    next,     text,    S_ERR]
+  , operator: [  op,   err,     textFin,  text,    S_ERR]
+  ,     text: [  tag,  err,     textFin,  text,    S_ERR]
+};
 
 const parse = (tokens) => {
   let index = 0;
-  let parseState = STATE_TAG;
-
   // Starting state of parser
-  let state = new ParseState();
+  let parseState = new ParseState();
 
-  while(index < tokens.length && parseState !== STATE_ERROR) {
+  while(index < tokens.length && parseState.state !== S_ERR) {
     const token = tokens[index];
-    parseState = dispatch[parseState](token, state);
+    debugLog(`> Token: ${token.type}="${token.value}"`);
+    const next = parserTransitionMatrix[token.type][parseState.state.value];
+    if (typeof next === `function`) {
+      parseState.state = next(parseState, token);
+    } else {
+      debugLog(`!next: ${next}`);
+      parseState.state = next;
+    }
     ++index;
   }
 
-  return state.terms;
+  if (parseState.state === S_ERR) {
+    debugLog(`Parser was in error state after parsing tokens.`);
+  }
+
+  return parseState.terms;
 };
 
 module.exports = queryParser;
