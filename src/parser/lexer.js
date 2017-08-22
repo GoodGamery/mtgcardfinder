@@ -12,7 +12,8 @@ class Lexer {
       if (s === ` `)
         return new Token(`space`, s);
       if (s === `or`)
-        return new Token(`or`, s);
+        return new Token(`operator`, `or`);
+      
       return new Token(`text`, s);
     });
   }

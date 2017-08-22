@@ -1,5 +1,7 @@
 const Lexer = require('./parser/lexer');
 const StateDef = require('./parser/state-def');
+const Term = require('./parser/term');
+const Operator = require('./parser/operator');
 
 const queryParser = (q) => {
   const tokens = Lexer.tokenize(q);
@@ -34,8 +36,8 @@ class ParseState {
     this.query.push(text);
   }
 
-  addOr() {
-    this.terms.push({ type: `or` });
+  addOperator(operator) {
+    this.terms.push(new Operator(operator));
     this.resetTagAndQuery();
   }
 
@@ -44,11 +46,7 @@ class ParseState {
   }
 
   finish() {
-    this.terms.push({
-      type: `term`,
-      tag: this.tag,
-      query: this.query.join(``)
-    });
+    this.terms.push(new Term(this.tag, this.query.join(``)));
     this.resetTagAndQuery();
   }
 }
@@ -77,9 +75,9 @@ const textFin = (parseState, token) => {
   return TAG;
 };
 
-const or = (parseState) => {
-  debugLog(`!or`);
-  parseState.addOr();
+const op = (parseState, token) => {
+  debugLog(`!op : ${token.value}`);
+  parseState.addOperator(token.value);
   return TAG;
 };
 
@@ -96,11 +94,11 @@ const next = (parseState) => {
 
 const parserTransitionMatrix =
   //          TAG   COLON    QUERY     QQUERY   ERR
-  { colon: [  err,  QUERY,   err,      text,    S_ERR]
-  , quote: [  err,  err,     S_QQUERY, finish,  S_ERR]
-  , space: [  next, next,    next,     text,    S_ERR]
-  ,    or: [  or,   err,     textFin,  text,    S_ERR]
-  ,  text: [  tag,  err,     textFin,  text,    S_ERR]
+  {    colon: [  err,  QUERY,   err,      text,    S_ERR]
+  ,    quote: [  err,  err,     S_QQUERY, finish,  S_ERR]
+  ,    space: [  next, next,    next,     text,    S_ERR]
+  , operator: [  op,   err,     textFin,  text,    S_ERR]
+  ,     text: [  tag,  err,     textFin,  text,    S_ERR]
 };
 
 const parse = (tokens) => {
