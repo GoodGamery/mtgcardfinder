@@ -36,8 +36,8 @@ class ParseState {
     this.query.push(text);
   }
 
-  addOperator(operator) {
-    this.terms.push(new Operator(operator));
+  addOperator(operatorName) {
+    this.terms.push(new Operator(operatorName));
     this.resetTagAndQuery();
   }
 
@@ -121,6 +121,14 @@ const parse = (tokens) => {
 
   if (parseState.state === S_ERR) {
     debugLog(`Parser was in error state after parsing tokens.`);
+  }
+
+  if (process.env.NODE_ENV === `test`) {
+    let results = [];
+    parseState.terms.forEach(term => {
+      results.push(term.toString());
+    });
+    console.log(`PARSED SYNTAX:\n\t«${results.join(`, `)}»`);
   }
 
   return parseState.terms;
