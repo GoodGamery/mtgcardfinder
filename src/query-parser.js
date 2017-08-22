@@ -93,7 +93,7 @@ const next = (parseState) => {
 };
 
 const parserTransitionMatrix =
-  //          TAG   COLON    QUERY     QQUERY   ERR
+  //             TAG   COLON    QUERY     QQUERY   ERR
   {    colon: [  err,  QUERY,   err,      text,    S_ERR]
   ,    quote: [  err,  err,     S_QQUERY, finish,  S_ERR]
   ,    space: [  next, next,    next,     text,    S_ERR]
