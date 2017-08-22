@@ -127,4 +127,29 @@ describe('query parser', () => {
     done();
   });
 
+  it ('should parse "or" between terms', done => {
+    const results = qParser(`a:b or c:d`);
+    results.length.should.equal(3);
+    results[0].tag.should.equal(`a`);
+    results[0].query.should.equal(`b`);
+    results[1].type.should.equal(`or`);
+    results[2].tag.should.equal(`c`);
+    results[2].query.should.equal(`d`);
+    done();
+  });
+
+  it ('should treat "or" after colon as a query', done => {
+    const results = qParser(`a:or`);
+    results.length.should.equal(1);
+    results[0].tag.should.equal(`a`);
+    results[0].query.should.equal(`or`);
+    done();
+  });
+
+  it ('should treat colon after "or" as an error', done => {
+    const results = qParser(`or:b`);
+    results.length.should.equal(1);
+    results[0].type.should.equal(`or`);
+    done();
+  });
 });
