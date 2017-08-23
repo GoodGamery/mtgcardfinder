@@ -14,9 +14,9 @@ class Lexer {
       if (s === `or`)
         return new Token(`operator`, `or`);
       if (s === `and`)
-        return new Token(`operator`, `or`);
+        return new Token(`operator`, `and`);
       if (s === `not`)
-        return new Token(`operator`, `or`);
+        return new Token(`operator`, `not`);
 
       return new Token(`text`, s);
     });

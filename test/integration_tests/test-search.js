@@ -62,4 +62,27 @@ describe('search feature', () => {
       });
   });
 
+  it('should allow logical OR', (done) => {
+    chai.request(server)
+      .get('/card/json?q=name:"Fact+or+Fiction" or name:"Blinkmoth+Infusion"')
+      .end((err, res) => {
+        validateMtgJson(res);
+        res.body.length.should.equal(2);
+        res.body[0].name.should.equal(`Fact or Fiction`);
+        res.body[1].name.should.equal(`Blinkmoth Infusion`);
+        done();
+      });
+  });
+
+  it('should allow logical NOT', (done) => {
+    chai.request(server)
+      .get('/card/json?q=cmc:<2 not cmc:=0 not cmc:=0.5')
+      .end((err, res) => {
+        validateMtgJson(res);
+        res.body.length.should.equal(25);
+        res.body.forEach(c => c.cmc.should.equal(1));
+        done();
+      });
+  });
+
 });
