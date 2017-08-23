@@ -24,7 +24,7 @@ const validateMtgJson = (res) => {
   res.body[0].should.have.property('imageUrl');
 };
 
-describe('search feature', () => {
+describe('search', () => {
   it('should return 1 card with detailed search', (done) => {
     chai.request(server)
       .get('/card/json?q=pow:<4 tou:>9 t:Treefolk')
@@ -81,6 +81,44 @@ describe('search feature', () => {
         validateMtgJson(res);
         res.body.length.should.equal(25);
         res.body.forEach(c => c.cmc.should.equal(1));
+        done();
+      });
+  });
+
+  it('should allow logical AND', (done) => {
+    chai.request(server)
+      .get('/card/json?q=pow:6 and tou:2 and t:golem')
+      .end((err, res) => {
+        validateMtgJson(res);
+        res.body.length.should.equal(1);
+        res.body[0].name.should.equal(`Glass Golem`);
+        done();
+      });
+  });
+
+  it('should throw exception for misplaced AND', (done) => {
+    chai.request(server)
+      .get('/card/json?q=and pow:6')
+      .end((err, res) => {
+        res.should.have.status(400);
+        done();
+      });
+  });
+
+  it('should throw exception for misplaced OR', (done) => {
+    chai.request(server)
+      .get('/card/json?q=or pow:6')
+      .end((err, res) => {
+        res.should.have.status(400);
+        done();
+      });
+  });
+
+  it('should throw exception for misplaced NOT', (done) => {
+    chai.request(server)
+      .get('/card/json?q=not')
+      .end((err, res) => {
+        res.should.have.status(400);
         done();
       });
   });

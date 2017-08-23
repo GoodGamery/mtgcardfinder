@@ -1,61 +1,14 @@
-'use strict';
-
-const and = require('./predicates/and');
-const or = require('./predicates/or');
-const not = require('./predicates/not');
-const predicates = require('./predicates/');
 const queryParser = require('./query-parser');
+const compilePredicates = require('./predicates/compile-predicates');
 
 // Search interface:
 //   ?q=t:"golem"+mana=5
-// t:"legendary goblin" c:brm mana>1 pow>=2
+//   ?q=t:"legendary goblin" c:brm mana>1 pow>=2
 
 function search(cardList, q, limit) {
-  const predicate = getPredicateFromQuery(q);
-  return take(cardList, predicate, limit);
-}
-
-function getPredicateFromQuery(q) {
   const tokens = queryParser(q);
-  // Combine predicates
-  let predicateList = [];
-  for(let i = 0; i < tokens.length; ++i) {
-    let token = tokens[i];
-    if (tokens[i].type === `term`) {
-      predicateList.push(getPredicate(token.tag, token.query));
-    } else if (token.type === `operator`) {
-      switch(token.operator) {
-        case `and`:
-          if (predicateList.length >= 2) {
-            const a = predicateList.pop();
-            const b = predicateList.pop();
-            predicateList.push(and(a, b));
-          } else {
-            throw Error(`Malformed query: "and" may only be between two search terms`);
-          }
-          break;
-        case `or`:
-          if (predicateList.length >= 2) {
-            const a = predicateList.pop();
-            const b = predicateList.pop();
-            predicateList.push(or(a, b));
-          } else {
-            throw Error(`Malformed query: "or" may only be between two search terms`);
-          }
-          break;
-        case `not`:
-          if (predicateList.length >= 1) {
-            predicateList.push(not(predicateList.pop()));
-          } else {
-            throw Error(`Malformed query: "not" may only be before a search term`);
-          }
-          break;
-        default:
-          throw Error(`Unhandled operator ${token.operator}`);
-      }
-    }
-  }
-  return and.apply(null, predicateList);
+  const predicate = compilePredicates(tokens);
+  return take(cardList, predicate, limit);
 }
 
 // Returns the first n items in the list that match the predicate
@@ -68,12 +21,5 @@ function take(list, predicate, limit) {
   return results;
 }
 
-function getPredicate(tag, query) {
-  if (predicates[tag])
-    return predicates[tag].bind(null, query);
-  else
-    console.info(`No handler for search tag ${tag}`);
-  return () => true;
-}
 
 module.exports = search;
