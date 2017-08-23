@@ -4,10 +4,12 @@ class Operator {
     this.operator = operator;
     this.left = Symbol(`left`);
     this.right = Symbol(`right`);
+    this.unary = false;
     switch(operator) {
       case `not`:
         this.precendence = 3;
         this.associativity = this.right;
+        this.unary = true;
         break;
       case `or`:
         this.precedence = 2;

@@ -30,6 +30,8 @@ function getPredicateFromQuery(q) {
             const a = predicateList.pop();
             const b = predicateList.pop();
             predicateList.push(and(a, b));
+          } else {
+            throw Error(`Malformed query: "and" may only be between two search terms`);
           }
           break;
         case `or`:
@@ -37,13 +39,19 @@ function getPredicateFromQuery(q) {
             const a = predicateList.pop();
             const b = predicateList.pop();
             predicateList.push(or(a, b));
+          } else {
+            throw Error(`Malformed query: "or" may only be between two search terms`);
           }
           break;
         case `not`:
           if (predicateList.length >= 1) {
             predicateList.push(not(predicateList.pop()));
+          } else {
+            throw Error(`Malformed query: "not" may only be before a search term`);
           }
           break;
+        default:
+          throw Error(`Unhandled operator ${token.operator}`);
       }
     }
   }

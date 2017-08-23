@@ -166,4 +166,23 @@ describe('query parser', () => {
     results[0].query.should.equal(`Fact or Fiction`);
     done();
   });
+
+  it ('should process multiple "not" in a row', done => {
+    const results = qParser(`t:goblin not t:legendary not t:artifact`);
+    results.length.should.equal(5);
+    results[0].type.should.equal(`term`);
+    results[0].tag.should.equal(`t`);
+    results[0].query.should.equal(`goblin`);
+    results[1].type.should.equal(`term`);
+    results[1].tag.should.equal(`t`);
+    results[1].query.should.equal(`legendary`);
+    results[2].type.should.equal(`operator`);
+    results[2].operator.should.equal(`not`);
+    results[3].type.should.equal(`term`);
+    results[3].tag.should.equal(`t`);
+    results[3].query.should.equal(`artifact`);
+    results[4].type.should.equal(`operator`);
+    results[4].operator.should.equal(`not`);
+    done();
+  });
 });

@@ -10,6 +10,9 @@ class ShuntingYard {
       switch (token.type) {
         case `term`:
           output.push(token);
+          // Place unary operators after their single terms
+          if (stack.length > 0 && stack[stack.length-1].unary)
+            output.push(stack.pop());
           break;
         case `operator`:
           // Grab operators off of the stack
