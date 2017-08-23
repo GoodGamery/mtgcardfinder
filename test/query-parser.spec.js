@@ -130,15 +130,15 @@ describe('query parser', () => {
     done();
   });
 
-  it ('should parse "or" between terms', done => {
+  it ('should parse "or" between terms using postfix', done => {
     const results = qParser(`a:b or c:d`);
     results.length.should.equal(3);
     results[0].tag.should.equal(`a`);
     results[0].query.should.equal(`b`);
-    results[1].type.should.equal(`operator`);
-    results[1].operator.should.equal(`or`);
-    results[2].tag.should.equal(`c`);
-    results[2].query.should.equal(`d`);
+    results[1].tag.should.equal(`c`);
+    results[1].query.should.equal(`d`);
+    results[2].type.should.equal(`operator`);
+    results[2].operator.should.equal(`or`);
     done();
   });
 
