@@ -2,10 +2,16 @@ const Lexer = require('./parser/lexer');
 const StateDef = require('./parser/state-def');
 const Term = require('./parser/term');
 const Operator = require('./parser/operator');
+const ShuntingYard = require('./parser/shunting-yard');
 
 const queryParser = (q) => {
   const tokens = Lexer.tokenize(q);
-  return parse(tokens);
+  const infix = parse(tokens);
+  const postfix = ShuntingYard.run(infix);
+
+  debugLog(`INFIX SYNTAX:\n\t« ${infix.join(`, `)} »`);
+  debugLog(`POSTFIX SYNTAX:\n\t« ${postfix.join(`, `)} »`);
+  return postfix;
 };
 
 const TAG    = new StateDef(0, `TAG`);
@@ -23,7 +29,7 @@ class ParseState {
   constructor() {
     this.tag = ``;
     this.query = [];
-    this.terms = [];
+    this.syntax = [];
     this.state = TAG;
   }
 
@@ -37,7 +43,7 @@ class ParseState {
   }
 
   addOperator(operatorName) {
-    this.terms.push(new Operator(operatorName));
+    this.syntax.push(new Operator(operatorName));
     this.resetTagAndQuery();
   }
 
@@ -46,7 +52,7 @@ class ParseState {
   }
 
   finish() {
-    this.terms.push(new Term(this.tag, this.query.join(``)));
+    this.syntax.push(new Term(this.tag, this.query.join(``)));
     this.resetTagAndQuery();
   }
 }
@@ -63,7 +69,7 @@ const text = (parseState, token) => {
 };
 
 const finish = (parseState) => {
-  debugLog(`!finish : ${parseState.terms.join('')}`);
+  debugLog(`!finish : ${parseState.syntax.join('')}`);
   parseState.finish();
   return TAG;
 };
@@ -123,15 +129,7 @@ const parse = (tokens) => {
     debugLog(`Parser was in error state after parsing tokens.`);
   }
 
-  if (process.env.NODE_ENV === `test`) {
-    let results = [];
-    parseState.terms.forEach(term => {
-      results.push(term.toString());
-    });
-    console.log(`PARSED SYNTAX:\n\t«${results.join(`, `)}»`);
-  }
-
-  return parseState.terms;
+  return parseState.syntax;
 };
 
 module.exports = queryParser;
