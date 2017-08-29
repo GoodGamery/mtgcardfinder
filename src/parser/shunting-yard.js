@@ -1,5 +1,16 @@
 const Operator = require('./operator');
 
+class ShuntingException {
+  constructor(message) {
+    this.code = 400;
+    this.message = message;
+  }
+
+  toString() {
+    return `${this.code}: ${this.message}`;
+  }
+}
+
 class ShuntingYard {
   static run(inputTokens) {
     const tokens = ShuntingYard.addAutoAnds(inputTokens);
@@ -15,11 +26,35 @@ class ShuntingYard {
           if (stack.length > 0 && stack[stack.length-1].unary)
             output.push(stack.pop());
           break;
+        case `paren`:
+          if (token.operator === `(`) {
+            stack.push(token);
+          } else if (token.operator === `)`) {
+            let foundParen = false;
+            while(stack.length > 0) {
+              let tokenStack = stack[stack.length-1];
+              if(tokenStack.operator === `(`) {
+                stack.pop();
+                foundParen = true;
+                break;
+              } else if (tokenStack.type === `operator`) {
+                output.push(stack.pop());
+              } else {
+                break;
+              }
+            }
+
+            if (!foundParen)
+              throw new ShuntingException(`Missing an opening parentheses`);
+          }
+          break;
         case `operator`:
           // Grab operators off of the stack
           while (stack.length > 0) {
             let tokenStack = stack[stack.length-1];
-            if (tokenStack.precedence < token.precedence && tokenStack.associativity === Operator.prototype.left) {
+            if ( tokenStack.type === `operator`
+              && tokenStack.precedence <= token.precedence
+              && tokenStack.associativity === Operator.prototype.left) {
               output.push(stack.pop());
             } else {
               break;
@@ -31,7 +66,10 @@ class ShuntingYard {
     }
 
     while(stack.length > 0) {
-      output.push(stack.pop());
+      let op = stack.pop();
+      if (op.type === `paren`)
+        throw new ShuntingException(`Missing a closing parentheses`);
+      output.push(op);
     }
 
     return output;
