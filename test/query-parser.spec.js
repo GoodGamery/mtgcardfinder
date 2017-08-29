@@ -26,11 +26,11 @@ describe('query parser', () => {
     results[1].type.should.equal(`term`);
     results[1].tag.should.equal(`c`);
     results[1].query.should.equal(`d`);
-    results[2].type.should.equal(`term`);
-    results[2].tag.should.equal(`e`);
-    results[2].query.should.equal(`f`);
-    results[3].type.should.equal(`operator`);
-    results[3].operator.should.equal(`and`);
+    results[2].type.should.equal(`operator`);
+    results[2].operator.should.equal(`and`);
+    results[3].type.should.equal(`term`);
+    results[3].tag.should.equal(`e`);
+    results[3].query.should.equal(`f`);
     results[4].type.should.equal(`operator`);
     results[4].operator.should.equal(`and`);
     done();
@@ -83,10 +83,10 @@ describe('query parser', () => {
     results[0].query.should.equal(`magic: the gathering`);
     results[1].tag.should.equal(`b`);
     results[1].query.should.equal(`nothing`);
-    results[2].tag.should.equal(`c`);
-    results[2].query.should.equal(`come on, what's the deal?`);
-    results[3].type.should.equal(`operator`);
-    results[3].operator.should.equal(`and`);
+    results[2].type.should.equal(`operator`);
+    results[2].operator.should.equal(`and`);
+    results[3].tag.should.equal(`c`);
+    results[3].query.should.equal(`come on, what's the deal?`);
     results[4].type.should.equal(`operator`);
     results[4].operator.should.equal(`and`);
     done();
@@ -193,15 +193,16 @@ describe('query parser', () => {
     results[2].type.should.equal(`operator`);
     results[2].operator.should.equal(`not`);
 
-    results[3].type.should.equal(`term`);
-    results[3].tag.should.equal(`t`);
-    results[3].query.should.equal(`artifact`);
+    results[3].type.should.equal(`operator`);
+    results[3].operator.should.equal(`and`);
 
-    results[4].type.should.equal(`operator`);
-    results[4].operator.should.equal(`not`);
+    results[4].type.should.equal(`term`);
+    results[4].tag.should.equal(`t`);
+    results[4].query.should.equal(`artifact`);
 
     results[5].type.should.equal(`operator`);
-    results[5].operator.should.equal(`and`);
+    results[5].operator.should.equal(`not`);
+
 
     results[6].type.should.equal(`operator`);
     results[6].operator.should.equal(`and`);
@@ -228,17 +229,101 @@ describe('query parser', () => {
     results[3].tag.should.equal(`t`);
     results[3].query.should.equal(`c`);
 
-    results[4].type.should.equal(`term`);
-    results[4].tag.should.equal(`t`);
-    results[4].query.should.equal(`d`);
+    results[4].type.should.equal(`operator`);
+    results[4].operator.should.equal(`and`);
 
-    results[5].type.should.equal(`operator`);
-    results[5].operator.should.equal(`and`);
+    results[5].type.should.equal(`term`);
+    results[5].tag.should.equal(`t`);
+    results[5].query.should.equal(`d`);
 
     results[6].type.should.equal(`operator`);
     results[6].operator.should.equal(`and`);
 
+    done();
+  });
+
+  it (`should parse parentheses that don't change order`, done => {
+    const results = qParser(`( t:a or t:b ) and t:c`);
+    results.length.should.equal(5);
+
+    results[0].type.should.equal(`term`);
+    results[0].tag.should.equal(`t`);
+    results[0].query.should.equal(`a`);
+
+    results[1].type.should.equal(`term`);
+    results[1].tag.should.equal(`t`);
+    results[1].query.should.equal(`b`);
+
+    results[2].type.should.equal(`operator`);
+    results[2].operator.should.equal(`or`);
+
+    results[3].type.should.equal(`term`);
+    results[3].tag.should.equal(`t`);
+    results[3].query.should.equal(`c`);
+
+    results[4].type.should.equal(`operator`);
+    results[4].operator.should.equal(`and`);
 
     done();
+  });
+
+  it (`should parse parentheses that do change the order`, done => {
+    const results = qParser(`t:a or ( t:b and t:c )`);
+    results.length.should.equal(5);
+
+    results[0].type.should.equal(`term`);
+    results[0].tag.should.equal(`t`);
+    results[0].query.should.equal(`a`);
+
+    results[1].type.should.equal(`term`);
+    results[1].tag.should.equal(`t`);
+    results[1].query.should.equal(`b`);
+
+    results[2].type.should.equal(`term`);
+    results[2].tag.should.equal(`t`);
+    results[2].query.should.equal(`c`);
+
+    results[3].type.should.equal(`operator`);
+    results[3].operator.should.equal(`and`);
+
+    results[4].type.should.equal(`operator`);
+    results[4].operator.should.equal(`or`);
+    done();
+  });
+
+
+  it (`should parse parentheses that are right next to the term`, done => {
+    const results = qParser(`t:a or (t:b and t:c)`);
+    results.length.should.equal(5);
+
+    results[0].type.should.equal(`term`);
+    results[0].tag.should.equal(`t`);
+    results[0].query.should.equal(`a`);
+
+    results[1].type.should.equal(`term`);
+    results[1].tag.should.equal(`t`);
+    results[1].query.should.equal(`b`);
+
+    results[2].type.should.equal(`term`);
+    results[2].tag.should.equal(`t`);
+    results[2].query.should.equal(`c`);
+
+    results[3].type.should.equal(`operator`);
+    results[3].operator.should.equal(`and`);
+
+    results[4].type.should.equal(`operator`);
+    results[4].operator.should.equal(`or`);
+    done();
+  });
+
+  it (`should throw with mismatched parentheses`, done => {
+    try {
+      qParser(`t:a or t:b and t:c)`);
+      chai.fail();
+    } catch (e) {
+      e.message.should.equal(`Missing an opening parentheses`);
+      done();
+    }
+
   });
 });

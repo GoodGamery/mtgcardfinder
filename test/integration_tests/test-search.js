@@ -123,4 +123,32 @@ describe('search', () => {
       });
   });
 
+
+  it('should throw exception for mismatched parens', (done) => {
+    chai.request(server)
+      .get('/card/json?q=t:instant)')
+      .end((err, res) => {
+        res.should.have.status(400);
+        done();
+      });
+  });
+
+  it('should throw exception for mismatched parens', (done) => {
+    chai.request(server)
+      .get('/card/json?q=(t:instant')
+      .end((err, res) => {
+        res.should.have.status(400);
+        done();
+      });
+  });
+
+  it('should allow parentheses to control order of operations', (done) => {
+    chai.request(server)
+      .get('/card/json?q=t:goblin and (t:instant or t:sorcery)')
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.length.should.equal(4);
+        done();
+      });
+  });
 });

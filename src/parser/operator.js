@@ -4,6 +4,10 @@ class Operator {
     this.operator = operator;
     this.unary = false;
     switch(operator) {
+      case `(`:
+      case `)`:
+        this.type = `paren`;
+        break;
       case `not`:
         this.precedence = 1;
         this.associativity = Operator.prototype.right;

@@ -47,6 +47,11 @@ class ParseState {
     this.resetTagAndQuery();
   }
 
+  addParen(whichParen) {
+    this.syntax.push(new Operator(whichParen));
+    this.resetTagAndQuery();
+  }
+
   setTag(text) {
     this.tag = text;
   }
@@ -87,6 +92,12 @@ const op = (parseState, token) => {
   return TAG;
 };
 
+const paren = (parseState, token) => {
+  debugLog(`!paren : ${token.value}`);
+  parseState.addParen(token.value);
+  return TAG;
+};
+
 const tag = (parseState, token) => {
   debugLog(`!tag : "${token.value}"`);
   parseState.setTag(token.value);
@@ -99,12 +110,13 @@ const next = (parseState) => {
 };
 
 const parserTransitionMatrix =
-  //             TAG   COLON    QUERY     QQUERY   ERR
-  {    colon: [  err,  QUERY,   err,      text,    S_ERR]
-  ,    quote: [  err,  err,     S_QQUERY, finish,  S_ERR]
-  ,    space: [  next, next,    next,     text,    S_ERR]
-  , operator: [  op,   err,     textFin,  text,    S_ERR]
-  ,     text: [  tag,  err,     textFin,  text,    S_ERR]
+// token\state   TAG    COLON    QUERY     QQUERY   ERR
+  {    colon: [  err,   QUERY,   err,      text,    S_ERR]
+  ,    quote: [  err,   err,     S_QQUERY, finish,  S_ERR]
+  ,    space: [  next,  next,    next,     text,    S_ERR]
+  , operator: [  op,    err,     textFin,  text,    S_ERR]
+  ,    paren: [  paren, err,     textFin,  text,    S_ERR]
+  ,     text: [  tag,   err,     textFin,  text,    S_ERR]
 };
 
 const parse = (tokens) => {
