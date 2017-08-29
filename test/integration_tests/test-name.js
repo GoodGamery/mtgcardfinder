@@ -25,38 +25,25 @@ const validateMtgJson = (res) => {
 };
 
 describe('name search', () => {
-  it('should return 20 Mogg cards', (done) => {
+  it('should return 18 Mogg cards', (done) => {
     chai.request(server)
       .get('/card/json?q=name:Mogg')
       .end((err, res) => {
         validateMtgJson(res);
-        res.body.length.should.equal(20);
+        res.body.length.should.equal(18);
         res.body.forEach(c => c.name.toLowerCase().should.contain(`mogg`));
         done();
       });
   });
 
-  it('should return 2 Wizard Coast cards', (done) => {
+  it('should return 1 Wizard Coastal cards', (done) => {
     chai.request(server)
-      .get('/card/json?q=name:Wizard name:Coast')
+      .get('/card/json?q=name:Wizard name:Coastal')
       .end((err, res) => {
         validateMtgJson(res);
-        res.body.length.should.equal(2);
+        res.body.length.should.equal(1);
         res.body.forEach(c => c.name.toLowerCase().should.contain(`wizard`));
         res.body.forEach(c => c.name.toLowerCase().should.contain(`coast`));
-        done();
-      });
-  });
-
-  it('should return 3 xyz cards', (done) => {
-    chai.request(server)
-      .get('/card/json?q=name:x name:y name:z')
-      .end((err, res) => {
-        validateMtgJson(res);
-        res.body.length.should.equal(3);
-        res.body.forEach(c => c.name.toLowerCase().should.contain(`x`));
-        res.body.forEach(c => c.name.toLowerCase().should.contain(`y`));
-        res.body.forEach(c => c.name.toLowerCase().should.contain(`z`));
         done();
       });
   });
