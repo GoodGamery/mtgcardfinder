@@ -1,9 +1,9 @@
-const matchSubstring = require('./matchSubstring');
+const matchString = require('./matchString');
 // Includes the entire type string
 //   ?q=set:Unglued
 //   ?q=text:"Mirrodin Pure"
 const matchSet = (needles, card) => {
-  return matchSubstring(needles, card.set);
+  return matchString(needles, card.set);
 };
 
 module.exports = matchSet;
