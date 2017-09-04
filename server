@@ -1,14 +1,9 @@
 #!/usr/bin/env node
-'use strict';
-
 const PORT = 3030;
 const app = require('./app');
 
-// Last resort, log exceptions
-process.on('uncaughtException', (err) => {
-  console.error(err);
-});
+app.listen(PORT)
+  .then((port) => console.log(`MTG Card Finder running on port ${port}`));
 
-app.listen(PORT, () =>
-    console.log(`MTG Card Finder listening on port ${PORT}`)
-);
+// Last resort, log exceptions
+process.on('uncaughtException', (err) => console.error(err));

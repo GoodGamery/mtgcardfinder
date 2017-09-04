@@ -6,9 +6,10 @@
   "repository": "https://github.com/GoodGamery/mtgcardfinder",
   "main": "server",
   "scripts": {
-    "start": "node server",
+    "start": "node --harmony server",
     "lint": "gulp lint",
     "watch": "gulp",
+    "update": "node --harmony update",
     "test": "npm run test-coverage",
     "test-mocha": "node ./node_modules/mocha/bin/_mocha --recursive --ui bdd",
     "test-coverage": "node ./node_modules/nyc/bin/nyc.js --extension=.js npm run test-mocha",
@@ -18,8 +19,10 @@
   "dependencies": {
     "cors": "2.8.4",
     "express": "4.15.3",
+    "fs-extra": "4.0.1",
     "lodash": "4.17.4",
-    "request": "2.81.0"
+    "request": "2.81.0",
+    "request-promise-native": "1.0.4"
   },
   "devDependencies": {
     "chai": "4.1.1",

@@ -3,9 +3,10 @@ node_js: node
 install: npm install
 cache:
   directories:
-    "node_modules"
+    - "node_modules"
+    - "downloads"
 before_script:
-  npm install -g mocha@3.5.0
+  npm run update
 script: npm test
 after_success: npm run coverage
 after_deploy: "Done"
