@@ -1,0 +1,5 @@
+#!/usr/bin/env node
+const Updater = require('./src/mtgjson/Updater');
+
+Updater.updateAllSets()
+  .then(() => console.log('Done!'));
