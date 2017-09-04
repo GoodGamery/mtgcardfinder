@@ -134,7 +134,6 @@ describe('search', () => {
         .end((err, res) => {
           res.should.have.status(400);
           done();
-          done();
         });
     });
   });
