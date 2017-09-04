@@ -32,8 +32,7 @@ describe('cardfinder', () => {
         validateMtgJson(res);
         res.body.length.should.equal(1);
         res.body[0].name.should.equal(`Plains`);
-        res.body[0].multiverseid.should.equal(430880);
-        res.body[0].imageUrl.should.equal('http://gatherer.wizards.com/Handlers/Image.ashx?type=card&multiverseid=430880');
+        res.body[0].imageUrl.should.contain('http://gatherer.wizards.com/Handlers/Image.ashx?type=card&multiverseid=');
         done();
       });
   });
@@ -55,7 +54,7 @@ describe('cardfinder', () => {
       .end((err, res) => {
         res.should.have.status(200);
         res.type.should.equal(`text/html`);
-        res.text.should.contain(`http://gatherer.wizards.com/Handlers/Image.ashx?type=card&multiverseid=430880`);
+        res.text.should.contain(`http://gatherer.wizards.com/Handlers/Image.ashx?type=card&multiverseid=`);
         done();
       });
   });
