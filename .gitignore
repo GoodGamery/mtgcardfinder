@@ -3,6 +3,10 @@ logs
 *.log
 npm-debug.log*
 
+# Updater data files
+downloads/AllSets.json
+downloads/version.json
+
 # Coverage from tests
 coverage/
 coverage.lcov

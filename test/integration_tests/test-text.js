@@ -3,17 +3,15 @@ process.env.NODE_ENV = 'test';
 
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const server = require('../../app');
+chai.should();  // Allows use of `should` in tests
+chai.use(chaiHttp);
 
-const TEST_PORT = 3031 + Math.floor(Math.random() * 10000);
-server.listen(TEST_PORT, () => {
-  console.log(`Tests running on port ${TEST_PORT}`);
+const app = require('../../app');
+const server = app.getExpress();
+app.listenRandomPort().then((port) => {
+  console.log(`Tests running on port ${port}`);
 });
 
-// Allows use of `should` in tests
-chai.should();
-
-chai.use(chaiHttp);
 
 const validateMtgJson = (res) => {
   res.should.have.status(200);
@@ -26,12 +24,14 @@ const validateMtgJson = (res) => {
 
 describe('card text search', () => {
   it('should allow quoted strings', (done) => {
-    chai.request(server)
-      .get('/card/json?limit=10&q=text:"you control:"')
-      .end((err, res) => {
-        validateMtgJson(res);
-        res.body.length.should.equal(10);
-        done();
-      });
+    app.getReady().then(() => {
+      chai.request(server)
+        .get('/card/json?limit=10&q=text:"you control:"')
+        .end((err, res) => {
+          validateMtgJson(res);
+          res.body.length.should.equal(10);
+          done();
+        });
+    });
   });
 });
