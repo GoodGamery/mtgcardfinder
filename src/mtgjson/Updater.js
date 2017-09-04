@@ -28,18 +28,27 @@ class Updater {
       forceUpdate = true;
     }
 
-    console.log(`MTG data version: ${versionFile}`);
-    const mtgJsonVersion = await MtgJson.getVersion();
+    console.log(`MTG Data version: ${versionFile}`);
+    let mtgJsonVersion = "0.0.0";
+    try {
+      mtgJsonVersion = await MtgJson.getVersion();
+    } catch (err) {
+      console.err(`Couldn't update version file:`, err);
+    }
 
     if (forceUpdate || Updater.compareVersion(versionFile, mtgJsonVersion) > 0) {
-      // Need to update file
-      console.log(`Updating data file: ${versionFile} ->  ${mtgJsonVersion}`);
-      dataFile = await MtgJson.getAllSets();
-      await fs.writeJson(path.join(DOWNLOAD_DIR, DATA_FILENAME), dataFile);
-      await fs.writeJson(path.join(DOWNLOAD_DIR, VERSION_FILENAME), mtgJsonVersion);
-      console.log("MTG data has been updated.");
+      try {
+        // Need to update file
+        console.log(`Updating MTG Data file: ${versionFile} ->  ${mtgJsonVersion}`);
+        dataFile = await MtgJson.getAllSets();
+        await fs.writeJson(path.join(DOWNLOAD_DIR, DATA_FILENAME), dataFile);
+        await fs.writeJson(path.join(DOWNLOAD_DIR, VERSION_FILENAME), mtgJsonVersion);
+        console.log(`MTG Data has been updated.`);
+      } catch (err) {
+        console.err(`Couldn't update the data file:`, err);
+      }
     } else {
-      console.log("MTG data is up to date.");
+      console.log(`MTG Data is up to date.`);
     }
 
     // The most recent data...
