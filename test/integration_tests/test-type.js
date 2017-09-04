@@ -53,7 +53,7 @@ describe('type search', () => {
       .get('/card/json?q=t:Creature t:Legendary t:Artifact')
       .end((err, res) => {
         validateMtgJson(res);
-        res.body.length.should.equal(9);
+        res.body.length.should.equal(10);
         res.body.forEach(c => c.type.should.contain(`Legendary`));
         res.body.forEach(c => c.type.should.contain(`Artifact`));
         res.body.forEach(c => c.type.should.contain(`Creature`));
