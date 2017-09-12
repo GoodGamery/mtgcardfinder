@@ -1,5 +1,6 @@
 const queryParser = require('./query-parser');
 const compilePredicates = require('./predicates/compile-predicates');
+const Term = require('./parser/term');
 
 // Search interface:
 //   ?q=t:"golem"+mana=5
@@ -7,8 +8,18 @@ const compilePredicates = require('./predicates/compile-predicates');
 
 function search(cardList, q, limit) {
   const tokens = queryParser(q);
-  const predicate = compilePredicates(tokens);
+  const overriddenTokens = applyOverrides(tokens);
+  const predicate = compilePredicates(overriddenTokens);
   return take(cardList, predicate, limit);
+}
+
+function applyOverrides(tokens) {
+  // If there are no layout tokens, add a default 'actualCards' one
+  const layoutTokens = tokens.filter(t => t.tag === `layout`);
+  if (layoutTokens.length === 0) {
+    return tokens.concat(new Term(`actualCards`, `true`));
+  }
+  return tokens;
 }
 
 // Returns the first n items in the list that match the predicate

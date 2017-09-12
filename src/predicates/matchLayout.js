@@ -1,5 +1,4 @@
 const matchString = require('./matchString');
-// Includes the entire type string
 //   ?q=layout:normal
 //   ?q=layout:token
 const matchLayout = (needles, card) => {

@@ -51,4 +51,50 @@ describe('layout search', () => {
     });
   });
 
+  it('should return actual cards', (done) => {
+    app.getReady().then(() => {
+      chai.request(server)
+        .get('/card/json?q=actualCards:true+name:"!grind"')
+        .end((err, res) => {
+          validateMtgJson(res);
+          // Cards with cost 15
+          res.body.length.should.equal(1);
+          res.body.forEach(c => c.type.should.equal(`Sorcery`));
+          res.body.forEach(c => c.layout.should.equal(`aftermath`));
+          done();
+        });
+    });
+  });
+
+  it('should return aftermath cards by default', (done) => {
+    app.getReady().then(() => {
+      chai.request(server)
+        .get('/card/json?q=name:"!grind"')
+        .end((err, res) => {
+          validateMtgJson(res);
+          // Cards with cost 15
+          res.body.length.should.equal(1);
+          res.body.forEach(c => c.type.should.equal(`Sorcery`));
+          res.body.forEach(c => c.layout.should.equal(`aftermath`));
+          done();
+        });
+    });
+  });
+
+  it('should return normal cards by default', (done) => {
+    app.getReady().then(() => {
+      chai.request(server)
+        .get('/card/json?q=name:"flametongue"')
+        .end((err, res) => {
+          validateMtgJson(res);
+          // Cards with cost 15
+          res.body.length.should.equal(1);
+          res.body.forEach(c => c.type.should.equal(`Creature — Kavu`));
+          res.body.forEach(c => c.layout.should.equal(`normal`));
+          done();
+        });
+    });
+  });
+
+
 });

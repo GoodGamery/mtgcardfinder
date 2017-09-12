@@ -6,5 +6,6 @@ module.exports = {
   tou: require('./matchToughness'),
   text: require('./matchText'),
   set: require('./matchSet'),
-  layout: require('./matchLayout')
+  layout: require('./matchLayout'),
+  actualCards: require('./matchActualCards')
 };
