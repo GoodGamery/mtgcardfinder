@@ -5,5 +5,6 @@ module.exports = {
   pow: require('./matchPower'),
   tou: require('./matchToughness'),
   text: require('./matchText'),
-  set: require('./matchSet')
+  set: require('./matchSet'),
+  layout: require('./matchLayout')
 };
