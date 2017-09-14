@@ -7,5 +7,6 @@ module.exports = {
   text: require('./matchText'),
   set: require('./matchSet'),
   layout: require('./matchLayout'),
-  actualCards: require('./matchActualCards')
+  actualCards: require('./matchActualCards'),
+  color: require('./matchColor')
 };
