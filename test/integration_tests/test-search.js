@@ -172,4 +172,28 @@ describe('search', () => {
         });
     });
   });
+
+  it('should allow searching for multiple cards of the same name', (done) => {
+    app.getReady().then(() => {
+      chai.request(server)
+        .get('/card/json?q=name:"Kami of the Crescent Moon"')
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.length.should.be.greaterThan(1);
+          done();
+        });
+    });
+  });
+
+  it('should allow using the "unique" query param to filter out duplicates', (done) => {
+    app.getReady().then(() => {
+      chai.request(server)
+        .get('/card/json?unique&q=name:"Kami of the Crescent Moon"')
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.length.should.equal(1);
+          done();
+        });
+    });
+  });
 });

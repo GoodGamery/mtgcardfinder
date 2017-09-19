@@ -15,7 +15,7 @@ class MtgData {
       return set.cards;
     });
 
-    const cardListEnhanced = _.map(cardListOriginal, (card) =>
+    this.cardList = _.map(cardListOriginal, (card) =>
       Object.assign({}, card, {
         imageUrl: card.multiverseid ? `${MULTIVERSE_URL}${card.multiverseid}` : undefined
       })
@@ -32,13 +32,13 @@ class MtgData {
     };
 
     this.cardMap = {};
-    cardListEnhanced.forEach(card => {
+    this.cardList.forEach(card => {
       const name = MtgData.normalizeName(card.name);
       this.cardMap[name] = compareCardsForSuitability(this.cardMap[name], card);
     });
 
     // Deduped card list
-    this.cardList = Object.keys(this.cardMap).map(k => this.cardMap[k]);
+    this.cardListUnique = Object.keys(this.cardMap).map(k => this.cardMap[k]);
 
     console.log(`Cards loaded: ${this.cardList.length}`);
   }
@@ -72,6 +72,7 @@ class MtgData {
 
   getCardsFromQuery(query, limit) {
     const sort = query.sort || `none`;
+    const unique = query.unique === `` || query.unique || false;
     const searchLimit = limit || 1;
     const searchQuery = query.q || ``;
     const name = query.card || ``;
@@ -82,7 +83,7 @@ class MtgData {
       let listToSearch = this.cardList;
       if (sort === RANDOM)
         shuffle(listToSearch);
-      return search(listToSearch, searchQuery, searchLimit);
+      return search(listToSearch, searchQuery, searchLimit, unique);
     }
     // Use exact card search
     let result = this.cardMap[normalizedName];
