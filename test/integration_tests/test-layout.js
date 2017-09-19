@@ -26,7 +26,7 @@ describe('layout search', () => {
   it('should return normal cards', (done) => {
     app.getReady().then(() => {
       chai.request(server)
-        .get('/card/json?q=layout:normal+name:"flametongue kavu"')
+        .get('/card/json?unique&q=layout:normal+name:"flametongue kavu"')
         .end((err, res) => {
           validateMtgJson(res);
           // Cards with cost 15
@@ -84,7 +84,7 @@ describe('layout search', () => {
   it('should return normal cards by default', (done) => {
     app.getReady().then(() => {
       chai.request(server)
-        .get('/card/json?q=name:"flametongue"')
+        .get('/card/json?unique&q=name:"flametongue"')
         .end((err, res) => {
           validateMtgJson(res);
           // Cards with cost 15
