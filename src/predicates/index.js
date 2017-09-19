@@ -8,5 +8,6 @@ module.exports = {
   set: require('./matchSet'),
   layout: require('./matchLayout'),
   actualCards: require('./matchActualCards'),
+  requireImage: require('./matchRequireImage'),
   color: require('./matchColor')
 };

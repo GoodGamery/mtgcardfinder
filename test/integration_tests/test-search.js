@@ -55,7 +55,7 @@ describe('search', () => {
   it('should find Fact or Fiction', (done) => {
     app.getReady().then(() => {
       chai.request(server)
-        .get('/card/json?q=name:"Fact+or+Fiction"')
+        .get('/card/json?unique&q=name:"Fact+or+Fiction"')
         .end((err, res) => {
           validateMtgJson(res);
           res.body.length.should.equal(1);
@@ -68,7 +68,7 @@ describe('search', () => {
   it('should allow logical OR', (done) => {
     app.getReady().then(() => {
       chai.request(server)
-        .get('/card/json?q=name:"Fact+or+Fiction" or name:"Blinkmoth+Infusion"')
+        .get('/card/json?unique&q=name:"Fact+or+Fiction" or name:"Blinkmoth+Infusion"')
         .end((err, res) => {
           validateMtgJson(res);
           res.body.length.should.equal(2);
@@ -164,10 +164,34 @@ describe('search', () => {
   it('should allow parentheses to control order of operations', (done) => {
     app.getReady().then(() => {
       chai.request(server)
-        .get('/card/json?q=t:goblin and (t:instant or t:sorcery)')
+        .get('/card/json?unique&q=t:goblin and (t:instant or t:sorcery)')
         .end((err, res) => {
           res.should.have.status(200);
           res.body.length.should.equal(4);
+          done();
+        });
+    });
+  });
+
+  it('should allow searching for multiple cards of the same name', (done) => {
+    app.getReady().then(() => {
+      chai.request(server)
+        .get('/card/json?q=name:"Kami of the Crescent Moon"')
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.length.should.be.greaterThan(1);
+          done();
+        });
+    });
+  });
+
+  it('should allow using the "unique" query param to filter out duplicates', (done) => {
+    app.getReady().then(() => {
+      chai.request(server)
+        .get('/card/json?unique&q=name:"Kami of the Crescent Moon"')
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.length.should.equal(1);
           done();
         });
     });

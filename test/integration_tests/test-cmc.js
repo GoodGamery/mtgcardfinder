@@ -22,10 +22,10 @@ const validateMtgJson = (res) => {
 };
 
 describe('cmc search', () => {
-  it('should return 5 cards with cmc = 15', (done) => {
+  it('should return 4 cards with cmc = 15', (done) => {
     app.getReady().then(() => {
       chai.request(server)
-        .get('/card/json?q=cmc:=15')
+        .get('/card/json?unique&q=cmc:=15')
         .end((err, res) => {
           validateMtgJson(res);
           // Cards with cost 15
@@ -36,10 +36,10 @@ describe('cmc search', () => {
     });
   });
 
-  it('should return 5 cards with cmc 15', (done) => {
+  it('should return 4 cards with cmc 15', (done) => {
     app.getReady().then(() => {
       chai.request(server)
-        .get('/card/json?q=cmc:15')
+        .get('/card/json?unique&q=cmc:15')
         .end((err, res) => {
           validateMtgJson(res);
           // Cards with cost 15
@@ -81,7 +81,7 @@ describe('cmc search', () => {
   it('should return 2 cards with cmc > 15', (done) => {
     app.getReady().then(() => {
       chai.request(server)
-        .get('/card/json?q=cmc:>15')
+        .get('/card/json?unique&q=cmc:>15')
         .end((err, res) => {
           validateMtgJson(res);
           // Cards with cost 16 or higher
@@ -95,7 +95,7 @@ describe('cmc search', () => {
   it('should return 2 cards cmc >= 15', (done) => {
     app.getReady().then(() => {
       chai.request(server)
-        .get('/card/json?q=cmc:>=15')
+        .get('/card/json?unique&q=cmc:>=15')
         .end((err, res) => {
           validateMtgJson(res);
           // Cards with cost 15 or higher

@@ -25,7 +25,7 @@ describe('color search', () => {
   it('should return 12 cards with exact mana red, white, blue', (done) => {
     app.getReady().then(() => {
       chai.request(server)
-        .get('/card/json?q=color:!rwum')
+        .get('/card/json?unique&q=color:!rwum')
         .end((err, res) => {
           validateMtgJson(res);
           res.body.length.should.equal(12);

@@ -25,7 +25,7 @@ describe('name search', () => {
   it('should return 18 Mogg cards', (done) => {
     app.getReady().then(() => {
       chai.request(server)
-        .get('/card/json?q=name:Mogg')
+        .get('/card/json?unique&q=name:Mogg')
         .end((err, res) => {
           validateMtgJson(res);
           res.body.length.should.equal(18);

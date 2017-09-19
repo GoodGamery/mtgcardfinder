@@ -65,7 +65,7 @@ describe('cardfinder', () => {
   it('should return exactly 11 cards from GET (q=t:Basic) /card/json', (done) => {
     app.getReady().then(() => {
       chai.request(server)
-        .get('/card/json?q=t:Basic')
+        .get('/card/json?unique&q=t:Basic')
         .end((err, res) => {
           validateMtgJson(res);
           // Basics, snow-covered basics, Wastes

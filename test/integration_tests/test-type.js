@@ -25,7 +25,7 @@ describe('type search', () => {
   it('should return 12 unicorns', (done) => {
     app.getReady().then(() => {
       chai.request(server)
-        .get('/card/json?q=t:Unicorn')
+        .get('/card/json?unique&q=t:Unicorn')
         .end((err, res) => {
           validateMtgJson(res);
           res.body.length.should.equal(12);
@@ -38,7 +38,7 @@ describe('type search', () => {
   it('should return 18 legendary goblins', (done) => {
     app.getReady().then(() => {
       chai.request(server)
-        .get('/card/json?q=t:Goblin t:Legendary')
+        .get('/card/json?unique&q=t:Goblin t:Legendary')
         .end((err, res) => {
           validateMtgJson(res);
           res.body.length.should.equal(18);
@@ -51,7 +51,7 @@ describe('type search', () => {
 
   it('should return 9 legendary artifact creatures', (done) => {
     chai.request(server)
-      .get('/card/json?q=t:Creature t:Legendary t:Artifact')
+      .get('/card/json?unique&q=t:Creature t:Legendary t:Artifact')
       .end((err, res) => {
         validateMtgJson(res);
         res.body.length.should.equal(10);
