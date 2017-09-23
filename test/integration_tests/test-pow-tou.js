@@ -23,13 +23,13 @@ const validateMtgJson = (res) => {
 };
 
 describe('pow/tou search', () => {
-  it('should return 3 cards with low power and high toughness', (done) => {
+  it('should return at least 3 cards with low power and high toughness', (done) => {
     app.getReady().then(() => {
       chai.request(server)
         .get('/card/json?q=pow:<4 tou:>9')
         .end((err, res) => {
           validateMtgJson(res);
-          res.body.length.should.equal(3);
+          res.body.length.should.be.greaterThan(3);
           res.body.forEach(c => Number(c.power).should.be.lessThan(4));
           res.body.forEach(c => Number(c.toughness).should.be.greaterThan(9));
           done();
