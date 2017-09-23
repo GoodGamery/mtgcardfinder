@@ -8,8 +8,6 @@ const RANDOM = `random`;
 
 class MtgData {
   constructor(allSets) {
-    this.allSets = allSets;
-
     const cardListOriginal = _.flatMap(allSets, set => {
       set.cards.forEach(card => card.set = set.name);
       return set.cards;
@@ -36,9 +34,6 @@ class MtgData {
       const name = MtgData.normalizeName(card.name);
       this.cardMap[name] = compareCardsForSuitability(this.cardMap[name], card);
     });
-
-    // Deduped card list
-    this.cardListUnique = Object.keys(this.cardMap).map(k => this.cardMap[k]);
 
     console.log(`Cards loaded: ${this.cardList.length}`);
   }
@@ -67,7 +62,7 @@ class MtgData {
     }
     if (useGoof && goofs && goofs[normalizedName])
       return Object.assign({}, this.cardMap[normalizedName], goofs[normalizedName]);
-    return this.cardMap[normalizedName];
+    return this.getCardFromMap(normalizedName);
   }
 
   getCardsFromQuery(query, limit) {
@@ -86,7 +81,7 @@ class MtgData {
       return search(listToSearch, searchQuery, searchLimit, unique);
     }
     // Use exact card search
-    let result = this.cardMap[normalizedName];
+    let result = this.getCardFromMap(normalizedName);
     if (useGoof && goofs && goofs[normalizedName])
       result = Object.assign({}, this.cardMap[normalizedName], goofs[normalizedName]);
     if (result)
@@ -96,6 +91,10 @@ class MtgData {
 
   getCardMap() {
     return this.cardMap;
+  }
+
+  getCardFromMap(name) {
+    return this.cardMap[name];
   }
 }
 
