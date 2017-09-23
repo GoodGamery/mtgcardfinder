@@ -33,8 +33,8 @@ const getCardHtml = (req, res) => {
   if (cards && cards.length > 0) {
     const htmlResults = cards
       .map(card => card && card.imageUrl
-      ? `<img src="${card.imageUrl}"></img>`
-      : `<img src="/static/images/cardback.jpg"></img>`
+      ? `<img src="${card.imageUrl}" />`
+      : `<img src="/static/images/cardback.jpg" />`
     );
     res.send(`<!DOCTYPE html>
       <html>
@@ -44,7 +44,7 @@ const getCardHtml = (req, res) => {
       </html>
     `);
   } else {
-    res.send(`<img src="/static/images/cardback.jpg"></img>`);
+    res.send(`<img src="/static/images/cardback.jpg" />`);
   }
 };
 
