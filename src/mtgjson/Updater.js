@@ -33,7 +33,7 @@ class Updater {
     try {
       mtgJsonVersion = await MtgJson.getVersion();
     } catch (err) {
-      console.err(`Couldn't update version file:`, err);
+      console.error(`Couldn't update version file:`, err);
     }
 
     if (forceUpdate || Updater.compareVersion(versionFile, mtgJsonVersion) > 0) {
@@ -45,7 +45,7 @@ class Updater {
         await fs.writeJson(path.join(DOWNLOAD_DIR, VERSION_FILENAME), mtgJsonVersion);
         console.log(`MTG Data has been updated.`);
       } catch (err) {
-        console.err(`Couldn't update the data file:`, err);
+        console.error(`Couldn't update the data file:`, err);
       }
     } else {
       console.log(`MTG Data is up to date.`);
