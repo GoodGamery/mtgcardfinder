@@ -35,13 +35,13 @@ describe('type search', () => {
     });
   });
 
-  it('should return 18 legendary goblins', (done) => {
+  it('should return 19 legendary goblins', (done) => {
     app.getReady().then(() => {
       chai.request(server)
         .get('/card/json?unique&q=t:Goblin t:Legendary')
         .end((err, res) => {
           validateMtgJson(res);
-          res.body.length.should.equal(18);
+          res.body.length.should.equal(19);
           res.body.forEach(c => c.type.should.contain(`Legendary`));
           res.body.forEach(c => c.type.should.contain(`Goblin`));
           done();
