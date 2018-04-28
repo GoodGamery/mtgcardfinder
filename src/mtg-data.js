@@ -46,11 +46,17 @@ class MtgData {
   }
 
   getSingleCardFromQuery(query) {
-    const searchQuery = query.q || ``;
     const name = query.card || ``;
     const useGoof = query.goof !== undefined;
-    const normalizedName = MtgData.normalizeName(name);
+    const normalizedName = MtgData.normalizeName(name);  
     const sort = query.sort || `none`;
+    let searchQuery = query.q || ``;
+
+    // if sort is random, use card search instead of the static card map
+    if (!searchQuery && sort === RANDOM) {
+      searchQuery = `name:"${normalizedName}"`;
+    }
+
     if (searchQuery) {
       let listToSearch = this.cardList;
       if (sort === RANDOM)
