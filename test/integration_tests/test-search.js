@@ -226,7 +226,7 @@ describe('search', () => {
       requester.close();
       done(testResult);
     });
-  }); 
+  }).timeout(3000);; 
 
   it('should return images with different file sizes for random image search', (done) => {
     app.getReady().then(async () => {
@@ -247,7 +247,7 @@ describe('search', () => {
       requester.close();
       done(testResult);
     });
-  });
+  }).timeout(3000);
 
   it('should return correct image for version-specific image search', (done) => {
     app.getReady().then(async () => {
@@ -266,9 +266,9 @@ describe('search', () => {
       requester.close();
       done(testResult);
     });
-  });
+  }).timeout(3000);
 
-  it('should return images with file sizes for "any version" image search', (done) => {
+  it('should return images with different file sizes for "any version" image search', (done) => {
     app.getReady().then(async () => {
       const searchUrl = '/image?card=Mountain&version=any';      
       const requester = chai.request(server).keepOpen();
@@ -286,5 +286,5 @@ describe('search', () => {
       requester.close();
       done(testResult);
     });
-  });
+  }).timeout(3000);
 });
