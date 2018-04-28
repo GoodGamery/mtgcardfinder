@@ -11,7 +11,7 @@ const rarities = {
 };
 
 const matchRarity = (needles, card) => {
-  normalizedNeedles = '!' + rarities[needles] || 'invalid';
+  let normalizedNeedles = rarities[needles] ? '!' + rarities[needles] : 'invalid';
   return matchString(normalizedNeedles, card.rarity);
 };
 
