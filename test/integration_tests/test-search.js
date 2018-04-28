@@ -21,6 +21,16 @@ const validateMtgJson = (res) => {
   res.body[0].should.have.property('imageUrl');
 };
 
+const validateImageResult = (res, resultAccumulator) => {
+  res.should.have.status(200);
+  res.type.should.equal(`image/jpeg`);
+  res.header.should.haveOwnProperty('content-length');
+  const imageSize = parseInt(res.header['content-length']);
+  imageSize.should.be.greaterThan(0);
+
+  resultAccumulator.push({imageSize: imageSize});
+};
+
 describe('search', () => {
   it('should return 1 card with detailed search', (done) => {
     app.getReady().then(() => {
@@ -196,4 +206,46 @@ describe('search', () => {
         });
     });
   });
+
+  it('should return the same image when a search is repeated', (done) => {
+    app.getReady().then(async () => {
+      const searchUrl = '/image?card=Mountain';      
+      const requester = chai.request(server).keepOpen();
+
+      let testResult;
+      const images = []; 
+      try {
+        for (var i = 0; i < 3; i++) {
+          await requester.get(searchUrl).then(res => validateImageResult(res, images));  
+        }
+        const uniqueImages = images.map(images => images.imageSize).filter((value, index, ary) => ary.indexOf(value) === index);
+        uniqueImages.should.have.lengthOf(1);
+      } catch(e) {
+        testResult = e;    
+      }
+      requester.close();
+      done(testResult);
+    });
+  }); 
+
+  it('should return images with different lengths for random image search', (done) => {
+    app.getReady().then(async () => {
+      const searchUrl = '/image?card=Mountain&sort=random';      
+      const requester = chai.request(server).keepOpen();
+
+      let testResult;
+      const images = []; 
+      try {
+        for (var i = 0; i < 3; i++) {
+          await requester.get(searchUrl).then(res => validateImageResult(res, images));  
+        }
+        const uniqueImages = images.map(images => images.imageSize).filter((value, index, ary) => ary.indexOf(value) === index);
+        uniqueImages.should.have.lengthOf.at.least(2);
+      } catch(e) {
+        testResult = e;    
+      }
+      requester.close();
+      done(testResult);
+    });
+  });  
 });
