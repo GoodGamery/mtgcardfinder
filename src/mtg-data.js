@@ -12,6 +12,7 @@ class MtgData {
       set.cards.forEach(card => {
         card.set = set.name;
         card.code = set.code;
+        card.border = card.border || set.border
       });    
 
       return set.cards;

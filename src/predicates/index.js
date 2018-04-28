@@ -11,5 +11,6 @@ module.exports = {
   requireImage: require('./matchRequireImage'),
   color: require('./matchColor'),
   code: require('./matchSetCode'),
-  rarity: require('./matchRarity')
+  rarity: require('./matchRarity'),
+  border: require('./matchBorder')
 };
