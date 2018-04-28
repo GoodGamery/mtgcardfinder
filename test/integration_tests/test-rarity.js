@@ -21,16 +21,30 @@ const validateMtgJson = (res) => {
   res.body[0].should.have.property('imageUrl');
 };
 
-describe('color search', () => {
-  it('should return 13 cards with exact mana red, white, blue', (done) => {
+describe('rarity search', () => {
+  it('should return 0 cards when an invalid rarity is specified', (done) => {
     app.getReady().then(() => {
       chai.request(server)
-        .get('/card/json?unique&q=color:!rwum')
+        .get('/card/json?unique&q=rarity:extraterrestrial')
         .end((err, res) => {
-          validateMtgJson(res);
-          res.body.length.should.equal(13);
+          res.type.should.equal(`application/json`);
+          res.body.should.be.a('array');
+          res.body.length.should.equal(0);
           done();
         });
     });
   });
+
+  it('should return at all mythic cards', (done) => {
+    app.getReady().then(() => {
+      chai.request(server)
+        .get('/card/json?unique&q=rarity:mythic')
+        .end((err, res) => {
+          validateMtgJson(res);
+          res.body.length.should.equal(25);
+          res.body.forEach(c => c.rarity.toLowerCase().should.equal(`mythic rare`));         
+          done();
+        });
+    });
+  });  
 });

@@ -21,16 +21,17 @@ const validateMtgJson = (res) => {
   res.body[0].should.have.property('imageUrl');
 };
 
-describe('color search', () => {
-  it('should return 13 cards with exact mana red, white, blue', (done) => {
+describe('set code search search', () => {
+  it('should return all 15 cards from FTV: Dragons', (done) => {
     app.getReady().then(() => {
       chai.request(server)
-        .get('/card/json?unique&q=color:!rwum')
+        .get('/card/json?unique&q=code:drb')
         .end((err, res) => {
           validateMtgJson(res);
-          res.body.length.should.equal(13);
+          res.body.length.should.equal(15);
+          res.body.forEach(c => c.set.toLowerCase().should.equal(`From the Vault: Dragons`.toLowerCase()));         
           done();
         });
     });
-  });
+  });  
 });

@@ -21,16 +21,17 @@ const validateMtgJson = (res) => {
   res.body[0].should.have.property('imageUrl');
 };
 
-describe('color search', () => {
-  it('should return 13 cards with exact mana red, white, blue', (done) => {
+describe('border search', () => {
+  it('should return at all white-bordered cards', (done) => {
     app.getReady().then(() => {
       chai.request(server)
-        .get('/card/json?unique&q=color:!rwum')
+        .get('/card/json?unique&q=border:white&limit=10')
         .end((err, res) => {
           validateMtgJson(res);
-          res.body.length.should.equal(13);
+          res.body.length.should.equal(10);
+          res.body.forEach(c => c.border.toLowerCase().should.equal(`white`));         
           done();
         });
     });
-  });
+  }).timeout(3000);  
 });

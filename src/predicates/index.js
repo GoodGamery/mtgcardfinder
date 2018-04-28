@@ -9,5 +9,8 @@ module.exports = {
   layout: require('./matchLayout'),
   actualCards: require('./matchActualCards'),
   requireImage: require('./matchRequireImage'),
-  color: require('./matchColor')
+  color: require('./matchColor'),
+  code: require('./matchSetCode'),
+  rarity: require('./matchRarity'),
+  border: require('./matchBorder')
 };

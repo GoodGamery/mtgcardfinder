@@ -22,26 +22,26 @@ const validateMtgJson = (res) => {
 };
 
 describe('type search', () => {
-  it('should return 12 unicorns', (done) => {
+  it('should return 13 unicorns', (done) => {
     app.getReady().then(() => {
       chai.request(server)
         .get('/card/json?unique&q=t:Unicorn')
         .end((err, res) => {
           validateMtgJson(res);
-          res.body.length.should.equal(12);
+          res.body.length.should.equal(13);
           res.body.forEach(c => c.type.should.contain(`Unicorn`));
           done();
         });
     });
   });
 
-  it('should return 19 legendary goblins', (done) => {
+  it('should return 20 legendary goblins', (done) => {
     app.getReady().then(() => {
       chai.request(server)
         .get('/card/json?unique&q=t:Goblin t:Legendary')
         .end((err, res) => {
           validateMtgJson(res);
-          res.body.length.should.equal(19);
+          res.body.length.should.equal(20);
           res.body.forEach(c => c.type.should.contain(`Legendary`));
           res.body.forEach(c => c.type.should.contain(`Goblin`));
           done();
@@ -49,12 +49,12 @@ describe('type search', () => {
     });
   });
 
-  it('should return 9 legendary artifact creatures', (done) => {
+  it('should return 11 legendary artifact creatures', (done) => {
     chai.request(server)
       .get('/card/json?unique&q=t:Creature t:Legendary t:Artifact')
       .end((err, res) => {
         validateMtgJson(res);
-        res.body.length.should.equal(10);
+        res.body.length.should.equal(11);
         res.body.forEach(c => c.type.should.contain(`Legendary`));
         res.body.forEach(c => c.type.should.contain(`Artifact`));
         res.body.forEach(c => c.type.should.contain(`Creature`));
