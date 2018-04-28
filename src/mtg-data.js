@@ -100,10 +100,6 @@ class MtgData {
     return undefined;
   }
 
-  getCardMap() {
-    return this.cardMap;
-  }
-
   getCardFromMap(name) {
     return this.cardMap[name];
   }
