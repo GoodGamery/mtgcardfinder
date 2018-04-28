@@ -25,10 +25,10 @@ describe('border search', () => {
   it('should return at all silver-bordered cards', (done) => {
     app.getReady().then(() => {
       chai.request(server)
-        .get('/card/json?unique&q=border:silver')
+        .get('/card/json?unique&q=border:silver&limit=10')
         .end((err, res) => {
           validateMtgJson(res);
-          res.body.length.should.equal(25);
+          res.body.length.should.equal(10);
           res.body.forEach(c => c.border.toLowerCase().should.equal(`silver`));         
           done();
         });
