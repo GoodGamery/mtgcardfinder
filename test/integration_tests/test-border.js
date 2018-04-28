@@ -22,16 +22,16 @@ const validateMtgJson = (res) => {
 };
 
 describe('border search', () => {
-  it('should return at all silver-bordered cards', (done) => {
+  it('should return at all white-bordered cards', (done) => {
     app.getReady().then(() => {
       chai.request(server)
-        .get('/card/json?unique&q=border:silver&limit=10')
+        .get('/card/json?unique&q=border:white&limit=10')
         .end((err, res) => {
           validateMtgJson(res);
           res.body.length.should.equal(10);
-          res.body.forEach(c => c.border.toLowerCase().should.equal(`silver`));         
+          res.body.forEach(c => c.border.toLowerCase().should.equal(`white`));         
           done();
         });
     });
-  });  
+  }).timeout(3000);  
 });
