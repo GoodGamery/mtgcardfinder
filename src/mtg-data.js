@@ -5,6 +5,7 @@ const shuffle = require('./shuffle');
 
 const MULTIVERSE_URL = 'http://gatherer.wizards.com/Handlers/Image.ashx?type=card&multiverseid=';
 const RANDOM = `random`;
+const ANY = `any`;
 
 class MtgData {
   constructor(allSets) {
@@ -55,20 +56,29 @@ class MtgData {
     const useGoof = query.goof !== undefined;
     const normalizedName = MtgData.normalizeName(name);  
     const sort = query.sort || `none`;
+
+    // alias for the 'code' predicate (three-letter set code)
+    // for use with 'card' parameter (i.e. image search)
+    const version = query.version; 
+
     let searchQuery = query.q || ``;
 
-    // if sort is random, use card search instead of the static card map
-    if (!searchQuery && sort === RANDOM) {
+    // if sort is random or a version is requested, 
+    // use card search instead of the static card map
+    if (!searchQuery && (sort === RANDOM || version !== undefined)) {
       searchQuery = `name:"${normalizedName}"`;
+      if (version !== ANY && version !== undefined) {
+        searchQuery += ` code:${version}`
+      }
     }
 
     if (searchQuery) {
       let listToSearch = this.cardList;
-      if (sort === RANDOM)
+      if (sort === RANDOM || version === ANY)
         shuffle(listToSearch);
       let card = search(listToSearch, searchQuery, 1)[0];
       if (card)
-        card.isRandom = sort === RANDOM;
+        card.isRandomOrVersioned = (sort === RANDOM) || (version !== undefined);
       return card;
     }
     if (useGoof && goofs && goofs[normalizedName])

@@ -20,7 +20,7 @@ const getCardImage = (req, res, next) => {
         .on(`error`, (err) => next(err))
         .pipe(res);
     } else {
-      if (card.isRandom)
+      if (card.isRandomOrVersioned)
         res.set(`Cache-Control`, `no-cache, no-store`);
       request.get(url).pipe(res);
     }
