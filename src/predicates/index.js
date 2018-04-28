@@ -10,5 +10,6 @@ module.exports = {
   actualCards: require('./matchActualCards'),
   requireImage: require('./matchRequireImage'),
   color: require('./matchColor'),
-  code: require('./matchSetCode')
+  code: require('./matchSetCode'),
+  rarity: require('./matchRarity')
 };
