@@ -9,7 +9,11 @@ const RANDOM = `random`;
 class MtgData {
   constructor(allSets) {
     const cardListOriginal = _.flatMap(allSets, set => {
-      set.cards.forEach(card => card.set = set.name);
+      set.cards.forEach(card => {
+        card.set = set.name;
+        card.code = set.code;
+      });    
+
       return set.cards;
     });
 
