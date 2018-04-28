@@ -22,28 +22,28 @@ const validateMtgJson = (res) => {
 };
 
 describe('cmc search', () => {
-  it('should return 4 cards with cmc = 15', (done) => {
+  it('should return 5 cards with cmc = 15', (done) => {
     app.getReady().then(() => {
       chai.request(server)
         .get('/card/json?unique&q=cmc:=15')
         .end((err, res) => {
           validateMtgJson(res);
           // Cards with cost 15
-          res.body.length.should.equal(4);
+          res.body.length.should.equal(5);
           res.body.forEach(c => c.cmc.should.equal(15));
           done();
         });
     });
   });
 
-  it('should return 4 cards with cmc 15', (done) => {
+  it('should return 5 cards with cmc 15', (done) => {
     app.getReady().then(() => {
       chai.request(server)
         .get('/card/json?unique&q=cmc:15')
         .end((err, res) => {
           validateMtgJson(res);
           // Cards with cost 15
-          res.body.length.should.equal(4);
+          res.body.length.should.equal(5);
           res.body.forEach(c => c.cmc.should.equal(15));
           done();
         });
@@ -92,14 +92,14 @@ describe('cmc search', () => {
     });
   });
 
-  it('should return 2 cards cmc >= 15', (done) => {
+  it('should return 7 cards cmc >= 15', (done) => {
     app.getReady().then(() => {
       chai.request(server)
         .get('/card/json?unique&q=cmc:>=15')
         .end((err, res) => {
           validateMtgJson(res);
           // Cards with cost 15 or higher
-          res.body.length.should.equal(6);
+          res.body.length.should.equal(7);
           res.body.forEach(c => c.cmc.should.be.at.least(15));
           done();
         });
