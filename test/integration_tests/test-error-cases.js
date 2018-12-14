@@ -12,6 +12,8 @@ app.listenRandomPort().then((port) => {
   console.log(`Tests running on port ${port}`);
 });
 
+after('done', done => {require('../../server').close(done); done();});
+
 describe('route error handlers', () => {
   it('should return 200 for missing query string on HTML', (done) => {
     app.getReady().then(() => {

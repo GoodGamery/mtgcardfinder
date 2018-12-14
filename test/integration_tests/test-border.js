@@ -7,10 +7,12 @@ chai.should();  // Allows use of `should` in tests
 chai.use(chaiHttp);
 
 const app = require('../../app');
-const server = app.getExpress();
+const expressServer = app.getExpress();
 app.listenRandomPort().then((port) => {
   console.log(`Tests running on port ${port}`);
 });
+
+after('done', done => {require('../../server').close(done); done();});
 
 const validateMtgJson = (res) => {
   res.should.have.status(200);
@@ -24,7 +26,7 @@ const validateMtgJson = (res) => {
 describe('border search', () => {
   it('should return at all white-bordered cards', (done) => {
     app.getReady().then(() => {
-      chai.request(server)
+      chai.request(expressServer)
         .get('/card/json?unique&q=border:white&limit=10')
         .end((err, res) => {
           validateMtgJson(res);

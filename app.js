@@ -22,6 +22,7 @@ expressApp.use(ErrorHandlers.clientErrorHandler);
 expressApp.use(ErrorHandlers.errorHandler);
 
 let readyPromise = null;
+let server = null;
 
 class App {
   static listen(port) {
@@ -35,6 +36,10 @@ class App {
     return readyPromise;
   }
 
+  static stop() {
+    server.close();
+  }
+
   static listenRandomPort() {
     const TEST_PORT = 3031 + Math.floor(Math.random() * 10000);
     return App.listen(TEST_PORT);
@@ -45,8 +50,7 @@ class App {
     global.mtgData = new MtgData(allSets);
     return new Promise((resolve, reject) => {
       try {
-        expressApp.listen(port,
-          () => resolve(port));
+        server = expressApp.listen(port, () => resolve(port));
       } catch (e) {
         reject(e);
       }

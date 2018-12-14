@@ -12,6 +12,7 @@ app.listenRandomPort().then((port) => {
   console.log(`Tests running on port ${port}`);
 });
 
+after('done', done => {require('../../server').close(done); done();});
 
 const validateMtgJson = (res) => {
   res.should.have.status(200);

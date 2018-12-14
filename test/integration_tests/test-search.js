@@ -31,6 +31,8 @@ const validateImageResult = (res, resultAccumulator) => {
   resultAccumulator.push({imageSize: imageSize});
 };
 
+after('done', done => {require('../../server').close(done); done();});
+
 describe('search', () => {
   it('should return 1 card with detailed search', (done) => {
     app.getReady().then(() => {

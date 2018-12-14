@@ -2,8 +2,17 @@
 const PORT = 3030;
 const app = require('./app');
 
-app.listen(PORT)
+let server = app.listen(PORT)
   .then((port) => console.log(`MTG Card Finder running on port ${port}`));
+
+function close() {
+  console.log(`Server is stopping...`);
+  app.stop();
+  console.log(`Server is stopped.`);
+}
 
 // Last resort, log exceptions
 process.on('uncaughtException', (err) => console.error(err));
+
+module.exports = server;
+module.exports.close = close;
