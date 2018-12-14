@@ -1,7 +1,8 @@
 'use strict';
 
 const gulp = require('gulp');
-const gutil = require('gulp-util');
+const colors = require('ansi-colors');
+const log = require('fancy-log');
 const debug = require('gulp-debug');
 const eslint = require('gulp-eslint');
 const runSequence = require('run-sequence');
@@ -21,11 +22,11 @@ gulp.task('jslint', function() {
     }, { errors: 0, warnings: 0 });
 
     if (result.errors > 0) {
-      gutil.log(gutil.colors.red('>>> Javascript linting: ' + gutil.colors.underline('FAILED') + '.'));
+      log(colors.red('>>> Javascript linting: ' + colors.underline('FAILED') + '.'));
     } else if (result.warnings > 0) {
-      gutil.log(gutil.colors.yellow('>>> Javascript linting ' + gutil.colors.underline('COMPLETED with warnings') + '.'));
+      log(colors.yellow('>>> Javascript linting ' + colors.underline('COMPLETED with warnings') + '.'));
     } else {
-      gutil.log(gutil.colors.green('>>> Javascript linting ' + gutil.colors.underline('COMPLETED') + '.'));
+      log(colors.green('>>> Javascript linting ' + colors.underline('COMPLETED') + '.'));
     }
   };
 
