@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "chai": "4.1.1",
-    "chai-http": "4.0.0",
+    "chai-http": "^4.2.0",
     "codecov": "2.3.0",
     "eslint": "4.2.0",
     "gulp": "3.9.1",
@@ -34,8 +34,8 @@
     "gulp-eslint": "4.0.0",
     "gulp-jsonlint": "1.2.0",
     "gulp-util": "3.0.8",
-    "mocha": "3.5.0",
-    "nyc": "11.1.0",
+    "mocha": "5.2.0",
+    "nyc": "13.1.0",
     "run-sequence": "2.0.0"
   }
 }

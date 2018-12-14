@@ -252,7 +252,7 @@ describe('search', () => {
   it('should return correct image for version-specific image search', (done) => {
     app.getReady().then(async () => {
       const searchUrl = '/image?card=Icy%20Manipulator&version=ice';      
-      const requester = chai.request(server).keepOpen();
+      const requester = chai.request(server);
  
       let testResult;
       const expectedImageSize = 35402;     
