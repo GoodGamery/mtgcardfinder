@@ -31,7 +31,8 @@ class Updater {
     console.log(`MTG Data version: ${versionFile}`);
     let mtgJsonVersion = "0.0.0";
     try {
-      mtgJsonVersion = await MtgJson.getVersion();
+      let mtgJsonResponse = await MtgJson.getVersion();
+      mtgJsonVersion = mtgJsonResponse.version;
     } catch (err) {
       console.error(`Couldn't update version file:`, err);
     }
@@ -39,7 +40,7 @@ class Updater {
     if (forceUpdate || Updater.compareVersion(versionFile, mtgJsonVersion) > 0) {
       try {
         // Need to update file
-        console.log(`Updating MTG Data file: ${versionFile} ->  ${mtgJsonVersion}`);
+        console.log(`Updating MTG Data file: ${versionFile} ->  ${mtgJsonVersion.version}`);
         dataFile = await MtgJson.getAllSets();
         await fs.writeJson(path.join(DOWNLOAD_DIR, DATA_FILENAME), dataFile);
         await fs.writeJson(path.join(DOWNLOAD_DIR, VERSION_FILENAME), mtgJsonVersion);
@@ -57,16 +58,11 @@ class Updater {
 
   // Return <0 if a is greater, >0 if b is greater
   static compareVersion(a, b) {
+    console.log(`Version Check - We have this one: ${a}, MtgJson.com has: ${b}`);
     if (a === null || a === undefined)
       return -1;
     if (b === null || b === undefined)
       return 1;
-
-    // Check for new versioning structure
-    if (b.version !== undefined)
-      b = b.version;
-
-    console.log(`Versions - a: ${a}, b: ${b}`);
 
     let aParts = a.split(`.`).map(n => Number(n));
     let bParts = b.split(`.`).map(n => Number(n));
