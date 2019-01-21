@@ -2,4 +2,5 @@
 const Updater = require('./src/mtgjson/Updater');
 
 Updater.updateAllSets()
-  .then(() => console.log('Done!'));
+  .then(() => console.log('Done!'))
+  .catch((err) => console.error(err));

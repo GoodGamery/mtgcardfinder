@@ -61,6 +61,13 @@ class Updater {
       return -1;
     if (b === null || b === undefined)
       return 1;
+
+    // Check for new versioning structure
+    if (b.version !== undefined)
+      b = b.version;
+
+    console.log(`Versions - a: ${a}, b: ${b}`);
+
     let aParts = a.split(`.`).map(n => Number(n));
     let bParts = b.split(`.`).map(n => Number(n));
     for (let i = 0; i < a.length; ++i) {
