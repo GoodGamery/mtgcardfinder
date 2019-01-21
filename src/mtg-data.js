@@ -3,7 +3,7 @@ const goofs = require('../data/goofs.json');
 const search = require('./search');
 const shuffle = require('./shuffle');
 
-const MULTIVERSE_URL = 'http://gatherer.wizards.com/Handlers/Image.ashx?type=card&multiverseid=';
+const MULTIVERSE_URL = 'http://gatherer.wizards.com/Handlers/Image.ashx?type=card&multiverseId=';
 const RANDOM = `random`;
 const ANY = `any`;
 
@@ -13,7 +13,7 @@ class MtgData {
       set.cards.forEach(card => {
         card.set = set.name;
         card.code = set.code;
-        card.border = card.border || set.border
+        card.border = card.border || set.border;
       });    
 
       return set.cards;
@@ -21,7 +21,7 @@ class MtgData {
 
     this.cardList = _.map(cardListOriginal, (card) =>
       Object.assign({}, card, {
-        imageUrl: card.multiverseid ? `${MULTIVERSE_URL}${card.multiverseid}` : undefined
+        imageUrl: card.multiverseId ? `${MULTIVERSE_URL}${card.multiverseId}` : undefined
       })
     );
 
@@ -32,7 +32,7 @@ class MtgData {
       if (b.imageUrl === undefined)    return a;
       if (a.rarity === `Special`) return b;
       if (b.rarity === `Special`) return a;
-      return (a.multiverseid > b.multiverseid) ? a : b;
+      return (a.multiverseId > b.multiverseId) ? a : b;
     };
 
     this.cardMap = {};

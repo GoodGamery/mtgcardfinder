@@ -4,7 +4,7 @@ const path = require('path');
 
 const getCardImage = (req, res, next) => {
   const card = global.mtgData.getSingleCardFromQuery(req.query);
-  if (!card || !card.multiverseid) {
+  if (!card || !card.multiverseId) {
     fs.createReadStream(path.join(__dirname, `..`, `static`, `images`, `cardback.jpg`))
       .on(`error`, (err) => next(err))
       .pipe(res).type('image/jpeg');

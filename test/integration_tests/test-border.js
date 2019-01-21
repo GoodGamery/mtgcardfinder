@@ -19,7 +19,7 @@ const validateMtgJson = (res) => {
   res.type.should.equal(`application/json`);
   res.body.should.be.a('array');
   res.body[0].should.have.property('name');
-  res.body[0].should.have.property('multiverseid');
+  res.body[0].should.have.property('multiverseId');
   res.body[0].should.have.property('imageUrl');
 };
 
