@@ -6,11 +6,11 @@
 
 const COLOR_CODES = {
   "!": `Exclude`,
-  w: `White`,
-  u: `Blue`,
-  b: `Black`,
-  r: `Red`,
-  g: `Green`,
+  w: `W`,
+  u: `U`,
+  b: `B`,
+  r: `R`,
+  g: `G`,
   m: `Multicolor`
 };
 

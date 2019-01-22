@@ -68,7 +68,7 @@ class MtgData {
     if (!searchQuery && (sort === RANDOM || version !== undefined)) {
       searchQuery = `name:"${normalizedName}"`;
       if (version !== ANY && version !== undefined) {
-        searchQuery += ` code:${version}`
+        searchQuery += ` code:${version}`;
       }
     }
 

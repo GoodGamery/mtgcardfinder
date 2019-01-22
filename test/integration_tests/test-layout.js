@@ -62,13 +62,13 @@ describe('layout search', () => {
           // Cards with cost 15
           res.body.length.should.equal(1);
           res.body.forEach(c => c.type.should.equal(`Sorcery`));
-          res.body.forEach(c => c.layout.should.equal(`aftermath`));
+          res.body.forEach(c => c.layout.should.equal(`split`));
           done();
         });
     });
   });
 
-  it('should return aftermath cards by default', (done) => {
+  it('should return aftermath cards by default (note that they are split)', (done) => {
     app.getReady().then(() => {
       chai.request(server)
         .get('/card/json?q=name:"!grind"')
@@ -77,7 +77,7 @@ describe('layout search', () => {
           // Cards with cost 15
           res.body.length.should.equal(1);
           res.body.forEach(c => c.type.should.equal(`Sorcery`));
-          res.body.forEach(c => c.layout.should.equal(`aftermath`));
+          res.body.forEach(c => c.layout.should.equal(`split`));
           done();
         });
     });

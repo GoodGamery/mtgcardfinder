@@ -5,7 +5,7 @@ const rarities = {
   common: 'Common',
   uncommon: 'Uncommon',
   rare: 'Rare',    
-  mythic: 'Mythic Rare',    
+  mythic: 'Mythic',
   basic: 'Basic Land',
   special: 'Special'
 };

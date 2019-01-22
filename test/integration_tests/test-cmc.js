@@ -18,6 +18,7 @@ const validateMtgJson = (res) => {
   res.should.have.status(200);
   res.type.should.equal(`application/json`);
   res.body.should.be.a('array');
+  res.body.length.should.be.greaterThan(0);
   res.body[0].should.have.property('name');
   res.body[0].should.have.property('multiverseId');
   res.body[0].should.have.property('imageUrl');
@@ -32,7 +33,7 @@ describe('cmc search', () => {
           validateMtgJson(res);
           // Cards with cost 15
           res.body.length.should.equal(5);
-          res.body.forEach(c => c.cmc.should.equal(15));
+          res.body.forEach(c => c.convertedManaCost.should.equal(15));
           done();
         });
     });
@@ -46,7 +47,7 @@ describe('cmc search', () => {
           validateMtgJson(res);
           // Cards with cost 15
           res.body.length.should.equal(5);
-          res.body.forEach(c => c.cmc.should.equal(15));
+          res.body.forEach(c => c.convertedManaCost.should.equal(15));
           done();
         });
     });
@@ -88,7 +89,7 @@ describe('cmc search', () => {
           validateMtgJson(res);
           // Cards with cost 16 or higher
           res.body.length.should.equal(2);
-          res.body.forEach(c => c.cmc.should.be.greaterThan(15));
+          res.body.forEach(c => c.convertedManaCost.should.be.greaterThan(15));
           done();
         });
     });
@@ -102,7 +103,7 @@ describe('cmc search', () => {
           validateMtgJson(res);
           // Cards with cost 15 or higher
           res.body.length.should.equal(7);
-          res.body.forEach(c => c.cmc.should.be.at.least(15));
+          res.body.forEach(c => c.convertedManaCost.should.be.at.least(15));
           done();
         });
     });
@@ -116,7 +117,7 @@ describe('cmc search', () => {
           validateMtgJson(res);
           // Cards with cost 15 or higher
           res.body.length.should.equal(10);
-          res.body.forEach(c => c.cmc.should.be.lessThan(1));
+          res.body.forEach(c => c.convertedManaCost.should.be.lessThan(1));
           done();
         });
     });
@@ -130,7 +131,7 @@ describe('cmc search', () => {
           validateMtgJson(res);
           // Cards with cost 15 or higher
           res.body.length.should.equal(10);
-          res.body.forEach(c => c.cmc.should.be.at.most(1));
+          res.body.forEach(c => c.convertedManaCost.should.be.at.most(1));
           done();
         });
     });

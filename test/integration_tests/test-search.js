@@ -16,6 +16,7 @@ const validateMtgJson = (res) => {
   res.should.have.status(200);
   res.type.should.equal(`application/json`);
   res.body.should.be.a('array');
+  res.body.length.should.be.greaterThan(0);
   res.body[0].should.have.property('name');
   res.body[0].should.have.property('multiverseId');
   res.body[0].should.have.property('imageUrl');
@@ -84,8 +85,9 @@ describe('search', () => {
         .end((err, res) => {
           validateMtgJson(res);
           res.body.length.should.equal(2);
-          res.body[0].name.should.equal(`Fact or Fiction`);
-          res.body[1].name.should.equal(`Blinkmoth Infusion`);
+          let names = res.body.map(c => c.name);
+          names.should.have.members([`Blinkmoth Infusion`, `Fact or Fiction`]);
+          // names.should.be.an('array').that.contains(`Blinkmoth Infusion`);
           done();
         });
     });
@@ -94,11 +96,11 @@ describe('search', () => {
   it('should allow logical NOT', (done) => {
     app.getReady().then(() => {
       chai.request(server)
-        .get('/card/json?q=cmc:<2 not cmc:=0 not cmc:=0.5')
+        .get('/card/json?q=cmc:<2 not cmc:=0 not cmc:=0.5&limit=25')
         .end((err, res) => {
           validateMtgJson(res);
           res.body.length.should.equal(25);
-          res.body.forEach(c => c.cmc.should.equal(1));
+          res.body.forEach(c => c.convertedManaCost.should.equal(1));
           done();
         });
     });
