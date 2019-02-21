@@ -49,15 +49,23 @@ class App {
   }
 
   static async updateAndStartExpress(port) {
-    const allSets = await Updater.updateAllSets();
-    // const allSets = {}; // Empty for testing
-    global.mtgData = new MtgData(allSets);
-    return new Promise((resolve, reject) => {
+    const allSetsStream = await Updater.updateAllSets();
+    let dataLoadPromise = new Promise((resolve, reject) => {
       try {
-        server = expressApp.listen(port, () => resolve(port));
+        global.mtgData = new MtgData(allSetsStream, () => resolve(true));
       } catch (e) {
         reject(e);
       }
+    });
+
+    return dataLoadPromise.then(() => {
+      return new Promise((resolve, reject) => {
+        try {
+          server = expressApp.listen(port, () => resolve(port));
+        } catch (e) {
+          reject(e);
+        }
+      });
     });
   }
 

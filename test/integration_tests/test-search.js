@@ -1,4 +1,3 @@
-'use strict';
 process.env.NODE_ENV = 'test';
 
 const chai = require('chai');
@@ -230,7 +229,7 @@ describe('search', () => {
       requester.close();
       done(testResult);
     });
-  }).timeout(3000);; 
+  }).timeout(3000);
 
   it('should return images with different file sizes for random image search', (done) => {
     app.getReady().then(async () => {
