@@ -33,7 +33,7 @@ const getCardHtml = (req, res) => {
   if (cards && cards.length > 0) {
     const htmlResults = cards
       .map(card => card && card.multiverseId
-      ? `<img src="${card.imageUrl ? card.imageUrl : global.mtgData.imagePrefix + card.multiverseId}" />`
+      ? `<img src="${card.imageUrl ? card.imageUrl : global.mtgData.imagePrefix + card.multiverseId}" width="223" />`
       : `<img src="/static/images/cardback.jpg" />`
     );
     res.send(`<!DOCTYPE html>
