@@ -9,7 +9,7 @@ const getCardImage = (req, res, next) => {
       .on(`error`, (err) => next(err))
       .pipe(res).type('image/jpeg');
   } else {
-    const url = card.imageUrl;
+    const url = card.imageUrl || `${global.mtgData.imagePrefix}${card.multiverseId}`;
     if (url.startsWith(`/static/`)) {
       if (url.endsWith(`.png`))
         res.contentType(`image/png`);
@@ -32,8 +32,8 @@ const getCardHtml = (req, res) => {
   const cards = global.mtgData.getCardsFromQuery(req.query, limit);
   if (cards && cards.length > 0) {
     const htmlResults = cards
-      .map(card => card && card.imageUrl
-      ? `<img src="${card.imageUrl}" />`
+      .map(card => card && card.multiverseId
+      ? `<img src="${card.imageUrl ? card.imageUrl : global.mtgData.imagePrefix + card.multiverseId}" />`
       : `<img src="/static/images/cardback.jpg" />`
     );
     res.send(`<!DOCTYPE html>

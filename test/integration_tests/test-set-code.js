@@ -20,7 +20,6 @@ const validateMtgJson = (res) => {
   res.body.should.be.a('array');
   res.body[0].should.have.property('name');
   res.body[0].should.have.property('multiverseId');
-  res.body[0].should.have.property('imageUrl');
 };
 
 describe('set code search search', () => {

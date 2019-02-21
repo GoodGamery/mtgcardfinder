@@ -9,39 +9,35 @@ const ANY = `any`;
 
 class MtgData {
   constructor(allSets) {
-    const cardListOriginal = _.flatMap(allSets, set => {
+    this.imagePrefix = MULTIVERSE_URL;
+    this.cardMap = {};
+
+    this.cardList = _.flatMap(allSets, set => {
       set.cards.forEach(card => {
         card.set = set.name;
         card.code = set.code;
         card.border = card.border || set.border;
-      });    
+      });
 
       return set.cards;
     });
 
-    this.cardList = _.map(cardListOriginal, (card) =>
-      Object.assign({}, card, {
-        imageUrl: card.multiverseId ? `${MULTIVERSE_URL}${card.multiverseId}` : undefined
-      })
-    );
-
     const compareCardsForSuitability = (a, b) => {
       if (a === undefined)    return b;
       if (b === undefined)    return a;
-      if (a.imageUrl === undefined)    return b;
-      if (b.imageUrl === undefined)    return a;
+      if (a.multiverseId === undefined)    return b;
+      if (b.multiverseId === undefined)    return a;
       if (a.rarity === `Special`) return b;
       if (b.rarity === `Special`) return a;
       return (a.multiverseId > b.multiverseId) ? a : b;
     };
 
-    this.cardMap = {};
     this.cardList.forEach(card => {
       const name = MtgData.normalizeName(card.name);
       this.cardMap[name] = compareCardsForSuitability(this.cardMap[name], card);
     });
 
-    console.log(`Cards loaded: ${this.cardList.length}`);
+    console.info(`Cards loaded: ${this.cardList.length}`);
   }
 
   static normalizeName(name) {

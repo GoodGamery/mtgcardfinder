@@ -20,7 +20,6 @@ const validateMtgJson = (res) => {
   res.body.should.be.a('array');
   res.body[0].should.have.property('name');
   res.body[0].should.have.property('multiverseId');
-  res.body[0].should.have.property('imageUrl');
 };
 
 describe('cardfinder', () => {
@@ -32,7 +31,6 @@ describe('cardfinder', () => {
           validateMtgJson(res);
           res.body.length.should.equal(1);
           res.body[0].name.should.equal(`Plains`);
-          res.body[0].imageUrl.should.contain('http://gatherer.wizards.com/Handlers/Image.ashx?type=card&multiverseId=');
           done();
         });
     });
@@ -58,7 +56,6 @@ describe('cardfinder', () => {
         .end((err, res) => {
           res.should.have.status(200);
           res.type.should.equal(`text/html`);
-          res.text.should.contain(`http://gatherer.wizards.com/Handlers/Image.ashx?type=card&multiverseId=`);
           done();
         });
     });
@@ -86,7 +83,6 @@ describe('cardfinder', () => {
           res.body.length.should.equal(1);
           res.body[0].name.should.equal(`Smallpox`);
           res.body[0].multiverseId.should.equal(417484);
-          res.body[0].imageUrl.should.equal('http://gatherer.wizards.com/Handlers/Image.ashx?type=card&multiverseId=417484');
           done();
         });
     });
