@@ -8,24 +8,17 @@ const VERSION_FILENAME = `version.json`;
 const DATA_FILENAME = `AllSets.json`;
 
 class Updater {
+  // Returns a readStream with the data
   static async updateAllSets() {
     console.log(`Updating MTG card data...`);
     let versionFile = `0.0.0`;
-    let dataFile = {};
-    let forceUpdate = false;
+    let needsUpdate = false;
 
     try {
       versionFile = await fs.readJson(path.join(DOWNLOAD_DIR, VERSION_FILENAME));
     }  catch (err) {
       console.error(`MTG Data version file couldn't be loaded, forcing update from mtgjson.com.`);
-      forceUpdate = true;
-    }
-
-    try {
-      dataFile = await fs.readJson(path.join(DOWNLOAD_DIR, DATA_FILENAME));
-    }  catch (err) {
-      console.error(`MTG Data file couldn't be loaded, forcing update from mtgjson.com.`);
-      forceUpdate = true;
+      needsUpdate = true;
     }
 
     console.log(`MTG Data version: ${versionFile}`);
@@ -37,25 +30,44 @@ class Updater {
       console.error(`Couldn't update version file:`, err);
     }
 
-    if (forceUpdate || Updater.compareVersion(versionFile, mtgJsonVersion) > 0) {
+    if (Updater.compareVersion(versionFile, mtgJsonVersion) > 0) {
+      console.log(`MTG Data needs to be updated`);
+      needsUpdate = true;
+    }
+
+    // Load data from local file
+    if (!needsUpdate) {
+      try {
+        console.log(`MTG Data is up to date. Loading from file.`);
+        return fs.createReadStream(path.join(DOWNLOAD_DIR, DATA_FILENAME));
+      } catch (err) {
+        console.error(`MTG Data file couldn't be loaded, forcing update from mtgjson.com.`);
+        needsUpdate = true;
+      }
+    }
+
+    if (needsUpdate) {
       try {
         // Need to update file
-        console.log(`Updating MTG Data file: ${versionFile} ->  ${mtgJsonVersion.version}`);
-        dataFile = await MtgJson.getAllSets();
-        await fs.writeJson(path.join(DOWNLOAD_DIR, DATA_FILENAME), dataFile);
+        console.log(`Updating MTG Data file: ${versionFile} ->  ${mtgJsonVersion}`);
+
+        // Pipe MTGJson data to the file
+        let allSetsStream = MtgJson.getAllSets();
+        let writeStream = fs.createWriteStream(path.join(DOWNLOAD_DIR, DATA_FILENAME));
+        allSetsStream.pipe(writeStream);
+
+        // Update stored version number
         await fs.writeJson(path.join(DOWNLOAD_DIR, VERSION_FILENAME), mtgJsonVersion);
-        console.log(`MTG Data has been updated.`);
+
+        console.log(`MTG Data has been updated to ${mtgJsonVersion}.`);
+
+        return allSetsStream;
       } catch (err) {
         console.error(`Couldn't update the data file:`, err);
       }
-    } else {
-      console.log(`MTG Data is up to date.`);
     }
-
-    // The most recent data...
-    return dataFile;
   }
-
+  
   // Return <0 if a is greater, >0 if b is greater
   static compareVersion(a, b) {
     console.log(`Version Check - We have this one: ${a}, MtgJson.com has: ${b}`);

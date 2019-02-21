@@ -1,6 +1,6 @@
 // Matches cards with images
 const matchRequireImage = (searchProp, card) => {
-  return !!card.imageUrl;
+  return !!card.multiverseId;
 };
 
 module.exports = matchRequireImage;

@@ -42,18 +42,30 @@ class App {
 
   static listenRandomPort() {
     const TEST_PORT = 3031 + Math.floor(Math.random() * 10000);
-    return App.listen(TEST_PORT);
+    return App.listen(TEST_PORT).catch(e => {
+      console.error(`Fatal exception starting application:`);
+      console.error(e);
+    });
   }
 
   static async updateAndStartExpress(port) {
-    const allSets = await Updater.updateAllSets();
-    global.mtgData = new MtgData(allSets);
-    return new Promise((resolve, reject) => {
+    const allSetsStream = await Updater.updateAllSets();
+    let dataLoadPromise = new Promise((resolve, reject) => {
       try {
-        server = expressApp.listen(port, () => resolve(port));
+        global.mtgData = new MtgData(allSetsStream, () => resolve(true));
       } catch (e) {
         reject(e);
       }
+    });
+
+    return dataLoadPromise.then(() => {
+      return new Promise((resolve, reject) => {
+        try {
+          server = expressApp.listen(port, () => resolve(port));
+        } catch (e) {
+          reject(e);
+        }
+      });
     });
   }
 

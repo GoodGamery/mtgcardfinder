@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const JSONStream = require('JSONStream');
 const goofs = require('../data/goofs.json');
 const search = require('./search');
 const shuffle = require('./shuffle');
@@ -8,40 +9,43 @@ const RANDOM = `random`;
 const ANY = `any`;
 
 class MtgData {
-  constructor(allSets) {
-    const cardListOriginal = _.flatMap(allSets, set => {
-      set.cards.forEach(card => {
-        card.set = set.name;
-        card.code = set.code;
-        card.border = card.border || set.border;
-      });    
+  constructor(allSetsStream, doneCallback) {
+    this.imagePrefix = MULTIVERSE_URL;
+    this.cardMap = {};
+    this.cardList = [];
 
-      return set.cards;
-    });
-
-    this.cardList = _.map(cardListOriginal, (card) =>
-      Object.assign({}, card, {
-        imageUrl: card.multiverseId ? `${MULTIVERSE_URL}${card.multiverseId}` : undefined
+    allSetsStream
+      .pipe(JSONStream.parse([true, `cards`, {emitPath: true}]))
+      .on('data', data => {
+        let card = data.value;
+        card.set = data.path[0];  // This used to be the set name
+        card.code = data.path[0];
+        card.legalities = null;
+        card.foreignData = null;
+        card.tcgplayerPurchaseUrl = null;
+        card.tcgplayerProductId = null;
+        card.variations = null;
+        this.cardList.push(card);
       })
-    );
+      .on('end', () => {
+        this.cardList.forEach(card => {
+          const name = MtgData.normalizeName(card.name);
+          this.cardMap[name] = compareCardsForSuitability(this.cardMap[name], card);
+        });
+
+        console.info(`Cards loaded: ${this.cardList.length}`);
+        doneCallback();
+      });
 
     const compareCardsForSuitability = (a, b) => {
       if (a === undefined)    return b;
       if (b === undefined)    return a;
-      if (a.imageUrl === undefined)    return b;
-      if (b.imageUrl === undefined)    return a;
+      if (a.multiverseId === undefined)    return b;
+      if (b.multiverseId === undefined)    return a;
       if (a.rarity === `Special`) return b;
       if (b.rarity === `Special`) return a;
       return (a.multiverseId > b.multiverseId) ? a : b;
     };
-
-    this.cardMap = {};
-    this.cardList.forEach(card => {
-      const name = MtgData.normalizeName(card.name);
-      this.cardMap[name] = compareCardsForSuitability(this.cardMap[name], card);
-    });
-
-    console.log(`Cards loaded: ${this.cardList.length}`);
   }
 
   static normalizeName(name) {

@@ -1,4 +1,3 @@
-'use strict';
 process.env.NODE_ENV = 'test';
 
 const chai = require('chai');
@@ -19,7 +18,6 @@ const validateMtgJson = (res) => {
   res.body.length.should.be.greaterThan(0);
   res.body[0].should.have.property('name');
   res.body[0].should.have.property('multiverseId');
-  res.body[0].should.have.property('imageUrl');
 };
 
 const validateImageResult = (res, resultAccumulator) => {
@@ -231,7 +229,7 @@ describe('search', () => {
       requester.close();
       done(testResult);
     });
-  }).timeout(3000);; 
+  }).timeout(3000);
 
   it('should return images with different file sizes for random image search', (done) => {
     app.getReady().then(async () => {

@@ -4,12 +4,17 @@ const Term = require('./parser/term');
 const Operator = require('./parser/operator');
 const ShuntingYard = require('./parser/shunting-yard');
 
+const debugLog = (text) => {
+  if (process.env.NODE_ENV === `test`)
+    console.log(text);
+};
+
 const queryParser = (q) => {
   const tokens = Lexer.tokenize(q);
   const infix = parse(tokens);
   const postfix = ShuntingYard.run(infix);
 
-  debugLog(`INFIX SYNTAX:\n\t« ${infix.join(`, `)} »`);
+  // debugLog(`INFIX SYNTAX:\n\t« ${infix.join(`, `)} »`);
   debugLog(`POSTFIX SYNTAX:\n\t« ${postfix.join(`, `)} »`);
   return postfix;
 };
@@ -19,11 +24,6 @@ const COLON  = new StateDef(1, `COLON`);
 const QUERY  = new StateDef(2, `QUERY`);
 const S_QQUERY = new StateDef(3, `QUOTED QUERY`);
 const S_ERR    = new StateDef(4, `ERROR`);
-
-const debugLog = (text) => {
-  if (process.env.NODE_ENV === `test`)
-    console.log(text);
-};
 
 class ParseState {
   constructor() {
@@ -68,44 +68,44 @@ const err = (parseState, token) => {
 };
 
 const text = (parseState, token) => {
-  debugLog(`!text : "${token.value}"`);
+  // debugLog(`!text : "${token.value}"`);
   parseState.addText(token.value);
   return parseState.state;
 };
 
 const finish = (parseState) => {
-  debugLog(`!finish : ${parseState.syntax.join('')}`);
+  // debugLog(`!finish : ${parseState.syntax.join('')}`);
   parseState.finish();
   return TAG;
 };
 
 const textFin = (parseState, token) => {
-  debugLog(`!textFin : "${token.value}"`);
+  // debugLog(`!textFin : "${token.value}"`);
   parseState.addText(token.value);
   parseState.finish();
   return TAG;
 };
 
 const op = (parseState, token) => {
-  debugLog(`!op : ${token.value}`);
+  // debugLog(`!op : ${token.value}`);
   parseState.addOperator(token.value);
   return TAG;
 };
 
 const paren = (parseState, token) => {
-  debugLog(`!paren : ${token.value}`);
+  // debugLog(`!paren : ${token.value}`);
   parseState.addParen(token.value);
   return TAG;
 };
 
 const tag = (parseState, token) => {
-  debugLog(`!tag : "${token.value}"`);
+  // debugLog(`!tag : "${token.value}"`);
   parseState.setTag(token.value);
   return COLON;
 };
 
 const next = (parseState) => {
-  debugLog(`!next : ${parseState.state}`);
+  // debugLog(`!next : ${parseState.state}`);
   return parseState.state;
 };
 
@@ -126,12 +126,12 @@ const parse = (tokens) => {
 
   while(index < tokens.length && parseState.state !== S_ERR) {
     const token = tokens[index];
-    debugLog(`> Token: ${token.type}="${token.value}"`);
+    // debugLog(`> Token: ${token.type}="${token.value}"`);
     const next = parserTransitionMatrix[token.type][parseState.state.value];
     if (typeof next === `function`) {
       parseState.state = next(parseState, token);
     } else {
-      debugLog(`!next: ${next}`);
+      // debugLog(`!next: ${next}`);
       parseState.state = next;
     }
     ++index;
