@@ -18,6 +18,7 @@ const validateMtgJson = (res) => {
   res.body.length.should.be.greaterThan(0);
   res.body[0].should.have.property('name');
   res.body[0].should.have.property('multiverseId');
+  res.body[0].should.have.property('imageUrl');
 };
 
 const validateImageResult = (res, resultAccumulator) => {

@@ -35,5 +35,5 @@ describe('border search', () => {
           done();
         });
     });
-  }).timeout(3000);  
+  }).timeout(15000);
 });
