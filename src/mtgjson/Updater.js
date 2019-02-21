@@ -52,7 +52,7 @@ class Updater {
         console.log(`Updating MTG Data file: ${versionFile} ->  ${mtgJsonVersion}`);
 
         // Pipe MTGJson data to the file
-        let allSetsStream = MtgJson.getAllSets();
+        let allSetsStream = MtgJson.getAllSetsStream();
         let writeStream = fs.createWriteStream(path.join(DOWNLOAD_DIR, DATA_FILENAME));
         allSetsStream.pipe(writeStream);
 
