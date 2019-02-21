@@ -36,7 +36,7 @@ describe('cmc search', () => {
           done();
         });
     });
-  });
+  }).timeout(15000);
 
   it('should return 5 cards with cmc 15', (done) => {
     app.getReady().then(() => {

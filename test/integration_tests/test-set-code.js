@@ -30,7 +30,7 @@ describe('set code search search', () => {
         .end((err, res) => {
           validateMtgJson(res);
           res.body.length.should.equal(15);
-          res.body.forEach(c => c.set.toLowerCase().should.equal(`From the Vault: Dragons`.toLowerCase()));         
+          res.body.forEach(c => c.set.toLowerCase().should.equal(`drb`.toLowerCase()));
           done();
         });
     });

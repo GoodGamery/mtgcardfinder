@@ -55,6 +55,13 @@ class MtgData {
       .trim();        // No trailing spaces
   }
 
+  static decorateWithImageUrl(card) {
+    if (card) {
+      card.imageUrl = `${MULTIVERSE_URL}${card.multiverseId}`;
+    }
+    return card;
+  }
+
   getSingleCardFromQuery(query) {
     const name = query.card || ``;
     const useGoof = query.goof !== undefined;
@@ -83,7 +90,7 @@ class MtgData {
       let card = search(listToSearch, searchQuery, 1)[0];
       if (card)
         card.isRandomOrVersioned = (sort === RANDOM) || (version !== undefined);
-      return card;
+      return MtgData.decorateWithImageUrl(card);
     }
     if (useGoof && goofs && goofs[normalizedName])
       return Object.assign({}, this.cardMap[normalizedName], goofs[normalizedName]);
@@ -103,7 +110,8 @@ class MtgData {
       let listToSearch = this.cardList;
       if (sort === RANDOM)
         shuffle(listToSearch);
-      return search(listToSearch, searchQuery, searchLimit, unique);
+      return search(listToSearch, searchQuery, searchLimit, unique)
+        .map(MtgData.decorateWithImageUrl);
     }
     // Use exact card search
     let result = this.getCardFromMap(normalizedName);
@@ -115,7 +123,7 @@ class MtgData {
   }
 
   getCardFromMap(name) {
-    return this.cardMap[name];
+    return MtgData.decorateWithImageUrl(this.cardMap[name]);
   }
 }
 

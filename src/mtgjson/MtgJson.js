@@ -16,7 +16,7 @@ class MtgJson {
   }
 
   static getAllSetsStream() {
-    return request.get(`${baseUrl}/AllSets.json`);
+    return request(`${baseUrl}/AllSets.json`);
   }
 }
 

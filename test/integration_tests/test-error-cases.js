@@ -24,7 +24,7 @@ describe('route error handlers', () => {
           done();
         });
     });
-  });
+  }).timeout(15000);
 
   it('should return 200 for missing query string on IMAGE', (done) => {
     app.getReady().then(() => {

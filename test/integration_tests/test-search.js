@@ -2,6 +2,7 @@ process.env.NODE_ENV = 'test';
 
 const chai = require('chai');
 const chaiHttp = require('chai-http');
+const helper = require('../test-helpers');
 chai.should();  // Allows use of `should` in tests
 chai.use(chaiHttp);
 
@@ -11,25 +12,6 @@ app.listenRandomPort().then((port) => {
   console.log(`Tests running on port ${port}`);
 });
 
-const validateMtgJson = (res) => {
-  res.should.have.status(200);
-  res.type.should.equal(`application/json`);
-  res.body.should.be.a('array');
-  res.body.length.should.be.greaterThan(0);
-  res.body[0].should.have.property('name');
-  res.body[0].should.have.property('multiverseId');
-};
-
-const validateImageResult = (res, resultAccumulator) => {
-  res.should.have.status(200);
-  res.type.should.equal(`image/jpeg`);
-  res.header.should.haveOwnProperty('content-length');
-  const imageSize = parseInt(res.header['content-length']);
-  imageSize.should.be.greaterThan(0);
-
-  resultAccumulator.push({imageSize: imageSize});
-};
-
 after('done', done => {require('../../server').close(done); done();});
 
 describe('search', () => {
@@ -38,7 +20,7 @@ describe('search', () => {
       chai.request(server)
         .get('/card/json?q=pow:<4 tou:>9 t:Treefolk')
         .end((err, res) => {
-          validateMtgJson(res);
+          helper.validateMtgJson(res);
           res.body.length.should.equal(1);
           res.body.forEach(c => Number(c.power).should.be.equal(2));
           res.body.forEach(c => Number(c.toughness).should.be.equal(10));
@@ -46,14 +28,14 @@ describe('search', () => {
           done();
         });
     });
-  });
+  }).timeout(15000);
 
   it('should ignore unknown search tags', (done) => {
     app.getReady().then(() => {
       chai.request(server)
         .get('/card/json?q=pow:<4 tou:>9 t:Treefolk flooble:flabble')
         .end((err, res) => {
-          validateMtgJson(res);
+          helper.validateMtgJson(res);
           res.body.length.should.equal(1);
           res.body.forEach(c => Number(c.power).should.be.equal(2));
           res.body.forEach(c => Number(c.toughness).should.be.equal(10));
@@ -61,27 +43,27 @@ describe('search', () => {
           done();
         });
     });
-  });
+  }).timeout(15000);
 
   it('should find Fact or Fiction', (done) => {
     app.getReady().then(() => {
       chai.request(server)
         .get('/card/json?unique&q=name:"Fact+or+Fiction"')
         .end((err, res) => {
-          validateMtgJson(res);
+          helper.validateMtgJson(res);
           res.body.length.should.equal(1);
           res.body[0].name.should.equal(`Fact or Fiction`);
           done();
         });
     });
-  });
+  }).timeout(15000);
 
   it('should allow logical OR', (done) => {
     app.getReady().then(() => {
       chai.request(server)
         .get('/card/json?unique&q=name:"Fact+or+Fiction" or name:"Blinkmoth+Infusion"')
         .end((err, res) => {
-          validateMtgJson(res);
+          helper.validateMtgJson(res);
           res.body.length.should.equal(2);
           let names = res.body.map(c => c.name);
           names.should.have.members([`Blinkmoth Infusion`, `Fact or Fiction`]);
@@ -89,7 +71,7 @@ describe('search', () => {
           done();
         });
     });
-  });
+  }).timeout(15000);
 
   // TODO: Revisit this later
   // it('should allow logical NOT', (done) => {
@@ -103,20 +85,20 @@ describe('search', () => {
   //         done();
   //       });
   //   });
-  // });
+  // }).timeout(15000);
 
   it('should allow logical AND', (done) => {
     app.getReady().then(() => {
       chai.request(server)
         .get('/card/json?q=pow:6 and tou:2 and t:golem')
         .end((err, res) => {
-          validateMtgJson(res);
+          helper.validateMtgJson(res);
           res.body.length.should.equal(1);
           res.body[0].name.should.equal(`Glass Golem`);
           done();
         });
     });
-  });
+  }).timeout(15000);
 
   it('should throw exception for misplaced AND', (done) => {
     app.getReady().then(() => {
@@ -127,7 +109,7 @@ describe('search', () => {
           done();
         });
     });
-  });
+  }).timeout(15000);
 
   it('should throw exception for misplaced OR', (done) => {
     app.getReady().then(() => {
@@ -138,7 +120,7 @@ describe('search', () => {
           done();
         });
     });
-  });
+  }).timeout(15000);
 
   it('should throw exception for misplaced NOT', (done) => {
     app.getReady().then(() => {
@@ -149,8 +131,7 @@ describe('search', () => {
           done();
         });
     });
-  });
-
+  }).timeout(15000);
 
   it('should throw exception for mismatched parens', (done) => {
     app.getReady().then(() => {
@@ -161,7 +142,7 @@ describe('search', () => {
           done();
         });
     });
-  });
+  }).timeout(15000);
 
   it('should throw exception for mismatched parens', (done) => {
     app.getReady().then(() => {
@@ -172,7 +153,7 @@ describe('search', () => {
           done();
         });
     });
-  });
+  }).timeout(15000);
 
   it('should allow parentheses to control order of operations', (done) => {
     app.getReady().then(() => {
@@ -184,7 +165,7 @@ describe('search', () => {
           done();
         });
     });
-  });
+  }).timeout(15000);
 
   it('should allow searching for multiple cards of the same name', (done) => {
     app.getReady().then(() => {
@@ -196,7 +177,7 @@ describe('search', () => {
           done();
         });
     });
-  });
+  }).timeout(15000);
 
   it('should allow using the "unique" query param to filter out duplicates', (done) => {
     app.getReady().then(() => {
@@ -208,7 +189,7 @@ describe('search', () => {
           done();
         });
     });
-  });
+  }).timeout(15000);
 
   it('should return the same image when a search is repeated', (done) => {
     app.getReady().then(async () => {
@@ -218,8 +199,8 @@ describe('search', () => {
       let testResult;
       const results = []; 
       try {
-        for (var i = 0; i < 2; i++) {
-          await requester.get(searchUrl).then(res => validateImageResult(res, results));  
+        for (let i = 0; i < 2; i++) {
+          await requester.get(searchUrl).then(res => helper.validateImageResult(res, results));
         }
         const uniqueImages = results.map(images => images.imageSize).filter((value, index, ary) => ary.indexOf(value) === index);
         uniqueImages.should.have.lengthOf(1);
@@ -229,7 +210,7 @@ describe('search', () => {
       requester.close();
       done(testResult);
     });
-  }).timeout(3000);
+  }).timeout(15000);
 
   it('should return images with different file sizes for random image search', (done) => {
     app.getReady().then(async () => {
@@ -239,8 +220,8 @@ describe('search', () => {
       let testResult;
       const results = []; 
       try {
-        for (var i = 0; i < 3; i++) {
-          await requester.get(searchUrl).then(res => validateImageResult(res, results));  
+        for (let i = 0; i < 3; i++) {
+          await requester.get(searchUrl).then(res => helper.validateImageResult(res, results));
         }
         const uniqueImages = results.map(images => images.imageSize).filter((value, index, ary) => ary.indexOf(value) === index);
         uniqueImages.should.have.lengthOf.at.least(2);
@@ -250,7 +231,7 @@ describe('search', () => {
       requester.close();
       done(testResult);
     });
-  }).timeout(3000);
+  }).timeout(15000);
 
   it('should return correct image for version-specific image search', (done) => {
     app.getReady().then(async () => {
@@ -261,7 +242,7 @@ describe('search', () => {
       const expectedImageSize = 35402;     
       const results = []; 
       try {
-        await requester.get(searchUrl).then(res => validateImageResult(res, results));         
+        await requester.get(searchUrl).then(res => helper.validateImageResult(res, results));
         results[0].imageSize.should.equal(expectedImageSize);
       } catch(e) {
         testResult = e;    
@@ -269,7 +250,7 @@ describe('search', () => {
       requester.close();
       done(testResult);
     });
-  }).timeout(3000);
+  }).timeout(15000);
 
   it('should return images with different file sizes for "any version" image search', (done) => {
     app.getReady().then(async () => {
@@ -278,8 +259,8 @@ describe('search', () => {
       let testResult;
       const results = []; 
       try {
-        for (var i = 0; i < 3; i++) {
-          await requester.get(searchUrl).then(res => validateImageResult(res, results));  
+        for (let i = 0; i < 3; i++) {
+          await requester.get(searchUrl).then(res => helper.validateImageResult(res, results));
         }
         const uniqueImages = results.map(images => images.imageSize).filter((value, index, ary) => ary.indexOf(value) === index);
         uniqueImages.should.have.lengthOf.at.least(2);
@@ -289,5 +270,5 @@ describe('search', () => {
       requester.close();
       done(testResult);
     });
-  }).timeout(3000);
+  }).timeout(15000);
 });
