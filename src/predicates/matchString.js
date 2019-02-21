@@ -8,7 +8,7 @@ const matchString = (needle, haystack) => {
       return haystack.toLowerCase().includes(shorterNeedle);
     } else if (firstChar === `!`) {
       // Strict - match entire string
-      return shorterNeedle.toLowerCase() === haystack.toLowerCase();
+      return shorterNeedle === haystack.toLowerCase();
     } else {
       // Default - match word boundaries
       const reg = new RegExp(`(^|\\W)${needle}(\\W|$)`, `i`);

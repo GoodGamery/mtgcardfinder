@@ -17,6 +17,11 @@ class MtgData {
         card.set = set.name;
         card.code = set.code;
         card.border = card.border || set.border;
+        card.legalities = null;
+        card.foreignData = null;
+        card.tcgplayerPurchaseUrl = null;
+        card.tcgplayerProductId = null;
+        card.variations = null;
       });
 
       return set.cards;
