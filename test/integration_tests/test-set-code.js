@@ -26,11 +26,11 @@ describe('set code search', () => {
   it('should return all 15 cards from FTV: Dragons', (done) => {
     app.getReady().then(() => {
       chai.request(server)
-        .get('/card/json?unique&q=setCode:drb')
+        .get('/card/json?unique&q=code:drb')
         .end((err, res) => {
           validateMtgJson(res);
           res.body.length.should.equal(15);
-          res.body.forEach(c => c.code.toLowerCase().should.equal(`drb`.toLowerCase()));
+          res.body.forEach(c => c.setCode.toLowerCase().should.equal(`drb`.toLowerCase()));
           done();
         });
     });
