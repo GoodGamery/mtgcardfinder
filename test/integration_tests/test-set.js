@@ -22,17 +22,30 @@ const validateMtgJson = (res) => {
   res.body[0].should.have.property('multiverseId');
 };
 
-describe('set code search', () => {
-  it('should return all 15 cards from FTV: Dragons', (done) => {
+describe('set name search', () => {
+  it('Should return 25 cards from "Mirrodin"', (done) => {
     app.getReady().then(() => {
       chai.request(server)
-        .get('/card/json?unique&q=code:drb')
+        .get('/card/json?unique&q=set:!mirrodin&limit=25')
         .end((err, res) => {
           validateMtgJson(res);
-          res.body.length.should.equal(15);
-          res.body.forEach(c => c.code.toLowerCase().should.equal(`drb`.toLowerCase()));
+          res.body.length.should.equal(25);
+          res.body.forEach(c => c.set.toLowerCase().should.equal(`mirrodin`));
           done();
         });
     });
-  });  
+  });
+
+  it('Should return 25 cards from sets with name containing "Mirrodin"', (done) => {
+    app.getReady().then(() => {
+      chai.request(server)
+        .get('/card/json?unique&q=set:mirrodin&sort=random&limit=25')
+        .end((err, res) => {
+          validateMtgJson(res);
+          res.body.length.should.equal(25);
+          res.body.forEach(c => c.set.toLowerCase().should.include(`mirrodin`));
+          done();
+        });
+    });
+  });
 });

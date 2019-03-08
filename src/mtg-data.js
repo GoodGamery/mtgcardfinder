@@ -18,15 +18,13 @@ class MtgData {
   		// .pipe(JSONStream.parse([true, {emitPath: true},  {emitPath: true}]))  
   		.pipe(JSONStream.parse([{emitKey: true}]))
   		.on('data', data => {
-  			console.log(`Parsing set: `, data.key);
-
   			const setCode = data.key;
   			const setName = data.value.name;
 
   			if (data.value.cards) {
   				data.value.cards.forEach(card => {
 		        card.set = setName;
-		        card.code = setCode;
+		        card.setCode = card.code = setCode;
 		        card.legalities = null;
 		        card.foreignData = null;
 		        card.tcgplayerPurchaseUrl = null;
