@@ -3,7 +3,7 @@ const matchString = require('./matchString');
 //   ?q=code:NPH
 //   ?q=code:BOK
 const matchCode = (needle, card) => {
-  return matchString(needle, card.code);
+  return matchString(needle, card.setCode);
 };
 
 module.exports = matchCode;

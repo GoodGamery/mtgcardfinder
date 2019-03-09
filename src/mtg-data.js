@@ -14,19 +14,26 @@ class MtgData {
     this.cardMap = {};
     this.cardList = [];
 
-    allSetsStream
-      .pipe(JSONStream.parse([true, `cards`, {emitPath: true}]))
-      .on('data', data => {
-        let card = data.value;
-        card.set = data.path[0];  // This used to be the set name
-        card.code = data.path[0];
-        card.legalities = null;
-        card.foreignData = null;
-        card.tcgplayerPurchaseUrl = null;
-        card.tcgplayerProductId = null;
-        card.variations = null;
-        this.cardList.push(card);
-      })
+  	allSetsStream
+  		// .pipe(JSONStream.parse([true, {emitPath: true},  {emitPath: true}]))  
+  		.pipe(JSONStream.parse([{emitKey: true}]))
+  		.on('data', data => {
+  			const setCode = data.key;
+  			const setName = data.value.name;
+
+  			if (data.value.cards) {
+  				data.value.cards.forEach(card => {
+		        card.set = setName;
+		        card.setCode = card.code = setCode;
+		        card.legalities = null;
+		        card.foreignData = null;
+		        card.tcgplayerPurchaseUrl = null;
+		        card.tcgplayerProductId = null;
+		        card.variations = null;
+		        this.cardList.push(card);
+  				});
+  			}
+  		})
       .on('end', () => {
         this.cardList.forEach(card => {
           const name = MtgData.normalizeName(card.name);
