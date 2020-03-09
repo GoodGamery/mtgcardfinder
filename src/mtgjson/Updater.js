@@ -76,6 +76,18 @@ class Updater {
     if (b === null || b === undefined)
       return 1;
 
+    // Pull out the last updated date
+    let aVersion = a.split(`+`);
+    let bVersion = b.split(`+`);
+    let aDate = Number(aVersion[1]);
+    let bDate = Number(bVersion[1]);
+
+    // Compare the dates
+    if (aDate !== undefined && bDate !== undefined) {
+      return Updater.compareNumber(aDate, bDate);
+    }
+
+    // Compare version dots
     let aParts = a.split(`.`).map(n => Number(n));
     let bParts = b.split(`.`).map(n => Number(n));
     for (let i = 0; i < a.length; ++i) {

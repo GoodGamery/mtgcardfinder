@@ -24,13 +24,13 @@ const validateMtgJson = (res) => {
 };
 
 describe('color search', () => {
-  it('should return 13 cards with exact mana red, white, blue', (done) => {
+  it('should return ~17 cards with exact mana red, white, blue', (done) => {
     app.getReady().then(() => {
       chai.request(server)
         .get('/card/json?unique&q=color:!rwum')
         .end((err, res) => {
           validateMtgJson(res);
-          res.body.length.should.equal(13);
+          res.body.length.should.be.greaterThan(16);
           done();
         });
     });

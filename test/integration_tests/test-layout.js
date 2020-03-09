@@ -58,25 +58,23 @@ describe('layout search', () => {
         .get('/card/json?q=actualCards:true+name:"!grind"')
         .end((err, res) => {
           validateMtgJson(res);
-          // Cards with cost 15
           res.body.length.should.equal(1);
           res.body.forEach(c => c.type.should.equal(`Sorcery`));
-          res.body.forEach(c => c.layout.should.equal(`split`));
+          res.body.forEach(c => c.layout.should.equal(`aftermath`));
           done();
         });
     });
   });
 
-  it('should return aftermath cards by default (note that they are split)', (done) => {
+  it('should find aftermath cards by default', (done) => {
     app.getReady().then(() => {
       chai.request(server)
         .get('/card/json?q=name:"!grind"')
         .end((err, res) => {
           validateMtgJson(res);
-          // Cards with cost 15
           res.body.length.should.equal(1);
           res.body.forEach(c => c.type.should.equal(`Sorcery`));
-          res.body.forEach(c => c.layout.should.equal(`split`));
+          res.body.forEach(c => c.layout.should.equal(`aftermath`));
           done();
         });
     });

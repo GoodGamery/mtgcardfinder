@@ -12,7 +12,7 @@ const normalizeName = (name) => {
     .trim();        // No trailing spaces
 };
 
-const serveLocal = (res, filename) => {
+const serveLocal = (res, next, filename) => {
   if (filename.endsWith(".png"))
     res.contentType("image/png");
   if (filename.endsWith(".jpg"))
@@ -28,15 +28,15 @@ const getCardImage = (req, res, next) => {
   const goofed = (req.query.goof !== undefined && goofs[cardName] && goofs[cardName]["imageUrl"]);
   console.log(goofed);
   if (goofed) {
-    serveLocal(res, goofed);
+    serveLocal(res, next, goofed);
   } else {
     const url = "https://api.scryfall.com/cards/named";
     const qs = {exact: cardName, format: "image", version: "normal"};
     request.get({url: url, qs: qs})
-      .on("error", (err) => serveLocal(res, "/static/images/cardback.jpg"))
+      .on("error", () => serveLocal(res, next, "/static/images/cardback.jpg"))
       .on("response", (resp) => {
-        if (resp.statusCode != 200) {
-          serveLocal(res, "/static/images/cardback.jpg");
+        if (resp.statusCode !== 200) {
+          serveLocal(res, next, "/static/images/cardback.jpg");
         } else {
           resp.pipe(res);
         }
